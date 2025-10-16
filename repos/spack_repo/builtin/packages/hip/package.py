@@ -439,11 +439,6 @@ class Hip(CMakePackage):
             # This is picked up by CMake when using HIP as a CMake language.
             env.append_path("HIPFLAGS", f"--gcc-toolchain={self.compiler.prefix}", separator=" ")
 
-        # set HCC_AMDGPU_TARGET using rocm_agent_enumerator
-        rocm_agent_enum_out = Executable(f"{self.spec['rocminfo'].prefix}/bin/rocm_agent_enumerator")("-t gpu", output=str, error=str)
-        targets_str = re.sub(r"\n+", ",", rocm_agent_enum_out.strip())
-        env.set("HCC_AMDGPU_TARGET", targets_str)
-
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         self.set_variables(env)
 
