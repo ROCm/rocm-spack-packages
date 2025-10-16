@@ -13,13 +13,14 @@ class RocmDebugAgent(CMakePackage):
     """Radeon Open Compute (ROCm) debug agent"""
 
     homepage = "https://github.com/ROCm/rocr_debug_agent"
-    git = "https://github.com/ROCm/rocr_debug_agent.git"
+    git = "https://github.com/AMD-ROCm-Internal/rocr_debug_agent.git"
     url = "https://github.com/ROCm/rocr_debug_agent/archive/rocm-6.2.4.tar.gz"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
     libraries = ["librocm-debug-agent"]
 
+    version("develop", branch="amd-mainline")
     version("7.0.0", sha256="5d822964855979c5063e0ec9554596463d37cdf5f3501550887c034beb3adcc8")
     version("6.4.3", sha256="4be5783e3df89e8c3e35c5690d9414ca8a0b695081352bb945bb533e01de1d65")
     version("6.4.2", sha256="8b42dee486f959795acbac7f8bf287718edbb14393e6262c3dcec97f0697d949")
@@ -86,6 +87,7 @@ class RocmDebugAgent(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
         depends_on(f"rocm-dbgapi@{ver}", when=f"@{ver}")

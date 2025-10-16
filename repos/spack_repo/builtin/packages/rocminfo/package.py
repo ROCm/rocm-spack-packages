@@ -12,12 +12,13 @@ class Rocminfo(CMakePackage):
     """Radeon Open Compute (ROCm) Runtime rocminfo tool"""
 
     homepage = "https://github.com/ROCm/rocminfo"
-    git = "https://github.com/ROCm/rocminfo.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rocminfo/archive/rocm-6.4.3.tar.gz"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "haampie")
 
+    version("develop", commit="538ebc5409e139d0c4c4e9b86c284f98ff488990")
     version("7.0.0", sha256="fdab0c04941a64f585605b05d4e520fb2261d10175227cc6e9f934e868462eea")
     version("6.4.3", sha256="0aa040963daaa2b5ebbec818a2d53c83612912686336160c223fb664dc0ca92b")
     version("6.4.2", sha256="b559f7e22086db952cec098d5512c77ae844f955a16d2cbbbd088fb3844c8787")
@@ -78,9 +79,18 @@ class Rocminfo(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")
 
     def cmake_args(self):
         return [self.define("ROCM_DIR", self.spec["hsa-rocr-dev"].prefix)]
+
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/rocminfo"
+        else:
+            return "."

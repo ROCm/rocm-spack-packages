@@ -15,6 +15,7 @@ class RocmCore(CMakePackage):
     getROCmVersion function provides the ROCm version."""
 
     homepage = "https://github.com/ROCm/rocm-core"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rocm-core/archive/refs/tags/rocm-6.4.2.tar.gz"
     tags = ["rocm"]
 
@@ -22,6 +23,7 @@ class RocmCore(CMakePackage):
     libraries = ["librocm-core"]
 
     license("MIT")
+    version("develop", commit="538ebc5409e139d0c4c4e9b86c284f98ff488990")
     version("7.0.0", sha256="d7741e12d184a6553f6d39b3ff4d113a2e7eeb509d5ec08e06cdaf51dcd26f90")
     version("6.4.3", sha256="dae6e06739882a3ce7be13ac300c22ab35ce80b4e853a21a1a3237fdc0411eb9")
     version("6.4.2", sha256="f3af7cfd930e20610736335ea860b9a39fb9bba4153fdc34b46ffe7da86a40ab")
@@ -90,5 +92,12 @@ class RocmCore(CMakePackage):
             env.set("LDFLAGS", "-fuse-ld=lld")
 
     def cmake_args(self):
-        args = [self.define("ROCM_VERSION", self.spec.version)]
+        args = [self.define("ROCM_VERSION", "7.1.0")]
         return args
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@:7.0"):
+            return "."
+        else:
+            return join_path("projects", "rocm-core")

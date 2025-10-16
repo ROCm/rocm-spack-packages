@@ -11,7 +11,7 @@ class RocprofilerCompute(CMakePackage):
     """Advanced Profiling and Analytics for AMD Hardware"""
 
     homepage = "https://github.com/ROCm/rocprofiler-compute"
-    git = "https://github.com/ROCm/rocprofiler-compute.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rocprofiler-compute/archive/refs/tags/rocm-6.4.3.tar.gz"
 
     tags = ["rocm"]
@@ -19,6 +19,7 @@ class RocprofilerCompute(CMakePackage):
     maintainers("afzpatel", "srekolam", "renjithravindrankannath")
 
     license("MIT")
+    version("develop", commit="538ebc5409e139d0c4c4e9b86c284f98ff488990")
     version("7.0.0", sha256="0ef46ee668b6ee6936911ecd70947abb4e501ced1c4f87d8001a6e35b9781705")
     version("6.4.3", sha256="d5005322dbfdd0feccd619d8fb6665f8631d74be1d6345be8726eff76829747b")
     version("6.4.2", sha256="0a0c5cbcc6d54881c58899d2f0db7feaa0d5665bf13e19f0715cb22f54b11187")
@@ -45,6 +46,14 @@ class RocprofilerCompute(CMakePackage):
     depends_on("py-dash-bootstrap-components", type=("build", "run"))
     depends_on("py-textual", when="@7.0:")
     depends_on("py-textual-plotext", when="@7.0:")
+    depends_on("py-sqlalchemy@2.0.42:", when="@develop")
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/rocprofiler-compute"
+        else:
+            return "."
 
     def cmake_args(self):
         args = [self.define("ENABLE_TESTS", self.run_tests)]

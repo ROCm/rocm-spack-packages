@@ -44,6 +44,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
 
     license("Apache-2.0")
 
+    version("develop", commit="a7d47b26ca0ec0b3e9e4da83825cace5d761f4bc")
     version("7.0.0", sha256="3d479a2aa615b6bb35cd3521122fbff34188dc0cc52d8b0acda59f9f55198211")
     version("6.4.3", sha256="7a484b621d568eef000ee8c4d2d46d589e5682b950f1f410ce7215031f1f3ad7")
     version("6.4.2", sha256="9f42cb73d90bd4561686c0366f60f6e58cfd32ff24b094c69e8259fb5d177457")
@@ -104,6 +105,11 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     depends_on("libxml2", type="link")
     depends_on("pkgconfig", type="build")
 
+    depends_on("numactl", when="@develop")
+    depends_on("libdrm", when="@develop")
+    depends_on("libelf", when="@develop")
+    depends_on("rocm-core@develop", when="@develop")
+
     # This flavour of LLVM doesn't work on MacOS, so we should ensure that it
     # isn't used to satisfy any of the libllvm dependencies on the Darwin
     # platform.
@@ -160,6 +166,14 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             sha256=d_shasum,
             when=f"@{d_version} +rocm-device-libs",
         )
+
+    resource(
+        name="rocm-systems",
+        placement="rocm-systems",
+        git="https://github.com/ROCm/rocm-systems/",
+        commit="538ebc5409e139d0c4c4e9b86c284f98ff488990",
+        when="@develop",
+    )
 
     for d_version, d_shasum in [
         ("7.0.0", "9ea2cbcf343f643ede6e16d82fbd0303771e1978759b2e546d0efc0df3263e4c"),
@@ -245,13 +259,17 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
                 dir = os.path.join(self.stage.source_path, "rocm-device-libs")
             elif self.spec.satisfies("@6.1:"):
                 dir = os.path.join(self.stage.source_path, "amd/device-libs")
-
-            args.extend(
-                [
-                    self.define("LLVM_EXTERNAL_PROJECTS", "device-libs"),
-                    self.define("LLVM_EXTERNAL_DEVICE_LIBS_SOURCE_DIR", dir),
-                ]
-            )
+            if self.spec.satisfies("@:7.0"):
+                args.extend(
+                    [
+                        self.define("LLVM_EXTERNAL_PROJECTS", "device-libs"),
+                        self.define("LLVM_EXTERNAL_DEVICE_LIBS_SOURCE_DIR", dir),
+                    ]
+                )
+            else:
+                args.append(self.define("LIBOMPTARGET_EXTERNAL_PROJECT_ROCM_DEVICE_LIBS_PATH", dir))
+                args.append(self.define("ROCM_DEVICE_LIBS_INSTALL_PREFIX_PATH", self.prefix))
+                args.append(self.define("ROCM_DEVICE_LIBS_BITCODE_INSTALL_LOC", "lib/clang/20/lib/amdgcn"))
 
         if self.spec.satisfies("+llvm_dylib"):
             args.append(self.define("LLVM_BUILD_LLVM_DYLIB", True))
@@ -273,6 +291,10 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             hsainc_path = os.path.join(
                 self.stage.source_path, "hsa-runtime/runtime/hsa-runtime/inc"
             )
+        if self.spec.satisfies("@develop"):
+            hsainc_path = os.path.join(
+                self.stage.source_path, "rocm-systems/projects/rocr-runtime/runtime/hsa-runtime/inc"
+            )
         args.append("-DSANITIZER_HSA_INCLUDE_PATH={0}".format(hsainc_path))
         args.append("-DSANITIZER_COMGR_INCLUDE_PATH={0}".format(comgrinc_path))
         args.append("-DSANITIZER_AMDGPU:Bool=ON")
@@ -289,6 +311,18 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             llvm_projects.extend(["mlir", "flang"])
             args.append(self.define("LIBOMPTARGET_BUILD_DEVICE_FORTRT", "ON"))
             args.append(self.define("FLANG_RUNTIME_F128_MATH_LIB", "libquadmath"))
+        if self.spec.satisfies("@develop"):
+            llvm_runtimes.extend(["offload", "openmp"])
+            args.append(self.define("LLVM_ENABLE_ZLIB", "ON"))
+            args.append(self.define("LLVM_INSTALL_UTILS", "ON"))
+            args.append(self.define("OPENMP_ENABLE_LIBOMPTARGET", "ON"))
+            hsa_path = os.path.join(
+                self.stage.source_path, "rocm-systems/projects/rocr-runtime/"
+            )
+            args.append(self.define("LIBOMPTARGET_EXTERNAL_PROJECT_HSA_PATH", hsa_path))
+            args.append(self.define("OFFLOAD_EXTERNAL_PROJECT_UNIFIED_ROCR", "ON"))
+            args.append(self.define("LIBOMPTARGET_ENABLE_DEBUG", "ON"))
+            args.append(self.define("LIBOMPTARGET_NO_SANITIZER_AMDGPU", "ON"))
         args.append(self.define("LLVM_ENABLE_PROJECTS", llvm_projects))
         args.append(self.define("LLVM_ENABLE_RUNTIMES", llvm_runtimes))
         return args
@@ -317,7 +351,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
 
     @run_after("install")
     def post_install(self):
-        if self.spec.satisfies("@6.1: +rocm-device-libs"):
+        if self.spec.satisfies("@6.1:7.0 +rocm-device-libs"):
             exe = self.prefix.bin.join("llvm-config")
             output = Executable(exe)("--version", output=str, error=str)
             version = re.split("[.]", output)[0]

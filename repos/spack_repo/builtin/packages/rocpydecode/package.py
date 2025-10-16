@@ -12,11 +12,13 @@ class Rocpydecode(CMakePackage):
     full HW acceleration for video decoding on AMD GPUs."""
 
     homepage = "https://github.com/ROCm/rocPyDecode"
+    git = "https://github.com/ROCm/rocPyDecode.git"
     url = "https://github.com/ROCm/rocPyDecode/archive/refs/tags/rocm-6.4.3.tar.gz"
     tags = ["rocm"]
 
     maintainers("afzpatel", "srekolam", "renjithravindrankannath")
 
+    version("develop", branch="develop")
     version("7.0.0", sha256="f4245da75ba7bd27d3dbd39ecae89255e6d2b8c2096e579f812708f28b08716d")
     version("6.4.3", sha256="d9dc540ab8d6cfd979016abeab9cfc79063e81647a32d9eeffd834a9d008f1e3")
     version("6.4.2", sha256="d51f2dde62c6e581b0d3676fbd74b36802b4f97bbfc3f82baee76097affca685")
@@ -47,11 +49,12 @@ class Rocpydecode(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"rocdecode@{ver}", when=f"@{ver}")
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
 
-    for ver in ["7.0.0"]:
+    for ver in ["7.0.0", "develop"]:
         depends_on(f"rocjpeg@{ver}", when=f"@{ver}")
 
     def patch(self):

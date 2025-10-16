@@ -13,7 +13,7 @@ class RocprofilerRegister(CMakePackage):
     libraries by the ROCprofiler (v2) library"""
 
     homepage = "https://github.com/ROCm/rocprofiler-register"
-    git = "https://github.com/ROCm/rocprofiler-register.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rocprofiler-register/archive/refs/tags/rocm-6.4.3.tar.gz"
 
     tags = ["rocm"]
@@ -21,6 +21,7 @@ class RocprofilerRegister(CMakePackage):
     maintainers("afzpatel", "srekolam", "renjithravindrankannath")
 
     license("MIT")
+    version("develop", commit="538ebc5409e139d0c4c4e9b86c284f98ff488990")
     version("7.0.0", sha256="fd8d22186385ee761c26acbeece89f61432c95492222c45865fe01027d99cfd7")
     version("6.4.3", sha256="05a59920b75aaeb14f1911fa2d4b131c4210d3c6204167fc2fd678634ce9c1e7")
     version("6.4.2", sha256="30da75f6b50fe4303c9c788ae29ed1aae79b0f653b7aa05e0f042b7313fb5de6")
@@ -42,9 +43,17 @@ class RocprofilerRegister(CMakePackage):
     depends_on("fmt")
     depends_on("glog")
 
-    patch("001-add-cpack-fmt-glog.patch")
+    patch("001-add-cpack-fmt-glog.patch", when="@:7.0")
+    patch("001-add-cpack-fmt-glog.patch", when="@develop", working_dir="projects/rocprofiler-register")
 
     def cmake_args(self):
         args = ["-DROCPROFILER_REGISTER_BUILD_FMT=OFF", "-DROCPROFILER_REGISTER_BUILD_GLOG=OFF"]
         args.append(self.define("ROCPROFILER_REGISTER_BUILD_TESTS", self.run_tests))
         return args
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/rocprofiler-register"
+        else:
+            return "."

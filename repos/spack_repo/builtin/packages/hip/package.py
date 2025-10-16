@@ -25,6 +25,7 @@ class Hip(CMakePackage):
 
     license("MIT")
 
+    version("develop", branch="develop")
     version("7.0.0", sha256="762794050eb9f47d8278a3d023bb47fd075c30c91ea9c4719cae55d91535de3c")
     version("6.4.3", sha256="3def2459ca9258f04d35d1d3b0173237cea2b963814886bb8af6a0e317718d3d")
     version("6.4.2", sha256="27e3558ecafa9a7471441aabdd870648fa2619147caa721bd98514fa00d246c1")
@@ -110,6 +111,7 @@ class Hip(CMakePackage):
             "6.4.2",
             "6.4.3",
             "7.0.0",
+            "develop",
         ]:
             depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
             depends_on(f"comgr@{ver}", when=f"@{ver}")
@@ -136,6 +138,7 @@ class Hip(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"hipcc@{ver}", when=f"@{ver}")
 
@@ -152,6 +155,7 @@ class Hip(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
 
@@ -205,6 +209,16 @@ class Hip(CMakePackage):
             working_dir="clr",
             when="@5.7:6.0",
         )
+
+    resource(
+        name="rocm-systems",
+        git="https://github.com/ROCm/rocm-systems.git",
+        commit="538ebc5409e139d0c4c4e9b86c284f98ff488990",
+        expand=True,
+        destination="",
+        placement="rocm-systems",
+        when="@develop",
+    )
 
     # Add hipcc sources thru the below
     for d_version, d_shasum in [
@@ -268,7 +282,10 @@ class Hip(CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        return "clr"
+        if self.spec.satisfies("@develop"):
+            return "rocm-systems/projects/clr"
+        else:
+            return "clr"
 
     def get_paths(self):
         if self.spec.external:
@@ -422,6 +439,11 @@ class Hip(CMakePackage):
             # This is picked up by CMake when using HIP as a CMake language.
             env.append_path("HIPFLAGS", f"--gcc-toolchain={self.compiler.prefix}", separator=" ")
 
+        # set HCC_AMDGPU_TARGET using rocm_agent_enumerator
+        rocm_agent_enum_out = Executable(f"{self.spec['rocminfo'].prefix}/bin/rocm_agent_enumerator")("-t gpu", output=str, error=str)
+        targets_str = re.sub(r"\n+", ",", rocm_agent_enum_out.strip())
+        env.set("HCC_AMDGPU_TARGET", targets_str)
+
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         self.set_variables(env)
 
@@ -447,6 +469,10 @@ class Hip(CMakePackage):
         self.spec.hipcc = join_path(self.prefix.bin, "hipcc")
 
     def patch(self):
+        if self.spec.satisfies("@develop"):
+            clr_dir = "rocm-systems/projects/clr"
+        else:
+            clr_dir = "clr"
         if self.spec.satisfies("@5.7:6.2 +rocm"):
             filter_file(
                 '"${ROCM_PATH}/llvm"',
@@ -458,11 +484,11 @@ class Hip(CMakePackage):
             filter_file(
                 '"${ROCM_PATH}/llvm"',
                 self.spec["llvm-amdgpu"].prefix,
-                "clr/hipamd/hip-config-amd.cmake.in",
+                f"{clr_dir}/hipamd/hip-config-amd.cmake.in",
                 string=True,
             )
         perl = self.spec["perl"].command
-        with working_dir("clr/hipamd/bin"):
+        with working_dir(f"{clr_dir}/hipamd/bin"):
             filter_file("^#!/usr/bin/perl", f"#!{perl}", "roc-obj-extract", "roc-obj-ls")
         if self.spec.satisfies("@5.7"):
             with working_dir("hipcc/bin"):
@@ -521,7 +547,11 @@ class Hip(CMakePackage):
 
         if self.spec.satisfies("+cuda"):
             args.append(self.define("HIP_PLATFORM", "nvidia"))
-            args.append(self.define("HIPNV_DIR", self.stage.source_path + "/hipother/hipnv"))
+            if self.spec.satisfies("@develop"):
+                hipnv_path = f"{self.stage.source_path}/hipother/hipnv"
+            else:
+                hipnv_path = f"{self.stage.source_path}/rocm-systems/projects/hipother/hipnv"
+            args.append(self.define("HIPNV_DIR", hipnv_path))
 
         args.append(self.define("HIP_COMMON_DIR", self.stage.source_path))
         args.append(self.define("HIP_CATCH_TEST", "OFF"))

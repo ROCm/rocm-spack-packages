@@ -17,13 +17,14 @@ class HsaRocrDev(CMakePackage):
     Linux HSA Runtime for Boltzmann (ROCm) platforms."""
 
     homepage = "https://github.com/ROCm/ROCR-Runtime"
-    git = "https://github.com/ROCm/ROCR-Runtime.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/ROCR-Runtime/archive/rocm-6.2.4.tar.gz"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")
     libraries = ["libhsa-runtime64"]
 
+    version("develop", commit="538ebc5409e139d0c4c4e9b86c284f98ff488990")
     version("7.0.0", sha256="9ea2cbcf343f643ede6e16d82fbd0303771e1978759b2e546d0efc0df3263e4c")
     version("6.4.3", sha256="3b23bed04cbed72304d31d69901eb76afa2099c7ac37f055348dfcda2d25e41a")
     version("6.4.2", sha256="8ad5dbf7cb0f728b8e515f46a41db24ed3b99ca894ccdd9f4d9bac969e9e35bb")
@@ -96,16 +97,19 @@ class HsaRocrDev(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")
 
-    for ver in ["6.3.0", "6.3.1", "6.3.2", "6.3.3", "6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0"]:
+    for ver in ["6.3.0", "6.3.1", "6.3.2", "6.3.3", "6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "develop"]:
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@6.3:"):
+        if self.spec.satisfies("@develop"):
+            return "projects/rocr-runtime"
+        elif self.spec.satisfies("@6.3:"):
             return "."
         else:
             return "src"

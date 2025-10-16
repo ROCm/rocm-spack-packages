@@ -13,7 +13,7 @@ class RocprofilerSystems(CMakePackage):
     """Application Profiling, Tracing, and Analysis"""
 
     homepage = "https://github.com/ROCm/rocprofiler-systems"
-    git = "https://github.com/ROCm/rocprofiler-systems.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rocprofiler-systems/archive/refs/tags/rocm-6.3.1.tar.gz"
     executables = ["rocprof-sys-sample"]
     tags = ["rocm"]
@@ -22,6 +22,12 @@ class RocprofilerSystems(CMakePackage):
 
     license("MIT")
 
+    version(
+        "develop",
+        branch="develop",
+        commit="538ebc5409e139d0c4c4e9b86c284f98ff488990",
+        submodules=True,
+    )
     version(
         "7.0.0",
         git="https://github.com/ROCm/rocprofiler-systems",
@@ -140,12 +146,17 @@ class RocprofilerSystems(CMakePackage):
     # hard dependencies
     depends_on("cmake@3.16:", type="build")
     depends_on("dyninst@:12", when="@6 ~internal-dyninst")
-    depends_on("dyninst@13", when="@7 ~internal-dyninst")
+    depends_on("dyninst@13", when="@7: ~internal-dyninst")
     depends_on(
         "boost+atomic+chrono+date_time+filesystem+system+thread+timer+container+random+exception",
         when="+internal-dyninst",
     )
+    depends_on(
+        "boost+atomic+chrono+date_time+filesystem+system+thread+timer+container+random+exception",
+        when="@develop",
+    )
     depends_on("libiberty+pic", when="+internal-dyninst")
+    depends_on("libiberty+pic", when="@develop")
     depends_on("m4")
     depends_on("texinfo")
     depends_on("libunwind", type=("build", "run"))
@@ -175,11 +186,12 @@ class RocprofilerSystems(CMakePackage):
             "6.4.2",
             "6.4.3",
             "7.0.0",
+            "develop",
         ]:
             depends_on(f"hip@{ver}", when=f"@{ver}")
-        for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0"]:
+        for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "develop"]:
             depends_on(f"rocprofiler-sdk@{ver}", when=f"@{ver}")
-        for ver in ["7.0.0"]:
+        for ver in ["7.0.0", "develop"]:
             depends_on(f"amdsmi@{ver}", when=f"@{ver}")
 
     # Fix GCC 13 build failure caused by a missing include of <array> in dyninst
@@ -189,6 +201,13 @@ class RocprofilerSystems(CMakePackage):
         when="@:6.4.0 +internal-dyninst",
         working_dir="external/dyninst",
     )
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/rocprofiler-systems"
+        else:
+            return "."
 
     def cmake_args(self):
         spec = self.spec

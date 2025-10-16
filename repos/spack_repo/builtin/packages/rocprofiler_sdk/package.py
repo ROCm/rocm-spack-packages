@@ -14,7 +14,7 @@ class RocprofilerSdk(CMakePackage):
     tracing GPU compute applications."""
 
     homepage = "https://github.com/ROCm/rocprofiler-sdk"
-    git = "https://github.com/ROCm/rocprofiler-sdk.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rocprofiler-sdk/archive/refs/tags/rocm-6.3.2.tar.gz"
 
     tags = ["rocm"]
@@ -23,6 +23,11 @@ class RocprofilerSdk(CMakePackage):
 
     license("MIT")
 
+    version(
+        "develop",
+        commit="538ebc5409e139d0c4c4e9b86c284f98ff488990",
+        submodules=True,
+    )
     version(
         "7.0.0",
         tag="rocm-7.0.0",
@@ -87,10 +92,11 @@ class RocprofilerSdk(CMakePackage):
     depends_on("cxx", type="build")
 
     depends_on("sqlite", when="@7:")
+    depends_on("elfutils", when="@7.1:")
 
     for ver in ["6.2.4", "6.3.0", "6.3.1", "6.3.2", "6.3.3", "6.4.0", "6.4.1", "6.4.2", "6.4.3"]:
         depends_on(f"aqlprofile@{ver}", when=f"@{ver}")
-    for ver in ["7.0.0"]:
+    for ver in ["7.0.0", "develop"]:
         depends_on(f"hsa-amd-aqlprofile@{ver}", when=f"@{ver}")
 
     for ver in [
@@ -104,14 +110,22 @@ class RocprofilerSdk(CMakePackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"rocm-cmake@{ver}", when=f"@{ver}")
         depends_on(f"rccl@{ver}", when=f"@{ver}")
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
 
-    for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0"]:
+    for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "develop"]:
         depends_on(f"rocdecode@{ver}", when=f"@{ver}")
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/rocprofiler-sdk"
+        else:
+            return "."
 
     def setup_run_environment(self, env):
         if not self.spec.external:

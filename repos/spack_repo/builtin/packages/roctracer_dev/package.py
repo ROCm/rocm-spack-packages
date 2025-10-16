@@ -16,7 +16,7 @@ class RoctracerDev(CMakePackage, ROCmPackage):
     specific runtime profiler to trace API and asyncronous activity."""
 
     homepage = "https://github.com/ROCm/roctracer"
-    git = "https://github.com/ROCm/roctracer.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/roctracer/archive/rocm-6.4.3.tar.gz"
     tags = ["rocm"]
 
@@ -25,6 +25,7 @@ class RoctracerDev(CMakePackage, ROCmPackage):
 
     license("MIT")
 
+    version("develop", commit="538ebc5409e139d0c4c4e9b86c284f98ff488990")
     version("7.0.0", sha256="c1f435b8040c6d34720eeadf837bc888b1c5aaccbfd7efaff4d602f1957f812f")
     version("6.4.3", sha256="a4378652b3b7141ca3b2743eedada03757383bff88932db8e28d0afd5869b882")
     version("6.4.2", sha256="c9bc3390fe4c406cc2b2bdb5a7e9f088e0107825624c9cd7b2a6ec120bc73ef8")
@@ -88,6 +89,7 @@ class RoctracerDev(CMakePackage, ROCmPackage):
         "6.4.2",
         "6.4.3",
         "7.0.0",
+        "develop",
     ]:
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")
         depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
@@ -107,6 +109,13 @@ class RoctracerDev(CMakePackage, ROCmPackage):
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         if self.spec.satisfies("+asan"):
             self.asan_on(env)
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/roctracer"
+        else:
+            return "."
 
     def cmake_args(self):
         args = [
