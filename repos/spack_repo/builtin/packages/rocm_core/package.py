@@ -29,6 +29,7 @@ class RocmCore(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
+    version("develop", branch="develop", commit="6276d4d7ab8350531e84a24d3db65b9f98d85eb6")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="0171b82a4d028d57035d0d57a01a058f50f1a23959d230cdeab14972dcd94da8")
     version("7.1.0", sha256="3c7e990ff4da60119c8575982660331bf636f63a9c68c6a344d410b2bdfa5d39")
@@ -81,6 +82,7 @@ class RocmCore(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on("llvm-amdgpu", when=f"@{ver}+asan")
 
@@ -112,5 +114,5 @@ class RocmCore(CMakePackage):
             env.set("LDFLAGS", "-fuse-ld=lld")
 
     def cmake_args(self):
-        args = [self.define("ROCM_VERSION", self.spec.version)]
+        args = [self.define("ROCM_VERSION", "7.3.0")]
         return args

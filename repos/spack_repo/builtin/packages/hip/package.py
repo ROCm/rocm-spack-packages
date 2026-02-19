@@ -24,6 +24,7 @@ class Hip(CMakePackage):
     libraries = ["libamdhip64"]
 
     license("MIT")
+    version("develop", branch="develop")
     version("7.2.0", sha256="4a22fcd0baf8df47d2e234f887f5bc03d522ce78928f82d1b0669a55897c4205")
     version("7.1.1", sha256="c64b3219237903d6b27944f236930a1024ed17eb5399165875fbf410fcacf6f4")
     version("7.1.0", sha256="e757a6e4a15d4113cd7cd8a4e9a2a3ff7a6a9ccbc65951179419331214f2784a")
@@ -78,6 +79,7 @@ class Hip(CMakePackage):
         # hipcc likes to add `-lnuma` by default :(
         # ref https://github.com/ROCm/HIP/pull/2202
         depends_on("numactl")
+        depends_on("simde", when="@develop")
 
         for ver in [
             "5.7.0",
@@ -117,6 +119,7 @@ class Hip(CMakePackage):
             "7.1.0",
             "7.1.1",
             "7.2.0",
+            "develop",
         ]:
             depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
             depends_on(f"comgr@{ver}", when=f"@{ver}")
@@ -147,6 +150,7 @@ class Hip(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"hipcc@{ver}", when=f"@{ver}")
 
@@ -167,6 +171,7 @@ class Hip(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
 
@@ -236,6 +241,15 @@ class Hip(CMakePackage):
             placement="rocm-systems",
             when=f"@{d_version}",
         )
+
+    resource(
+        name="rocm-systems",
+        git="https://github.com/ROCm/rocm-systems/",
+        branch="develop",
+        commit="a21f8443800cae400ff992ea1def302e64de532f",
+        placement="rocm-systems",
+        when="@develop",
+    )
 
     # Add hipcc sources thru the below
     for d_version, d_shasum in [

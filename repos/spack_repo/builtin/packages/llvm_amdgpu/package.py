@@ -43,6 +43,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")
 
     license("Apache-2.0")
+    version("develop", branch="amd-staging", commit="a2dc42b87c63e686377a69f09ea23aec7550babc")
     version("7.2.0", sha256="e86138d2a63fbcbdf64668d55573b26ae944d0f0ae5a3f5bb59bf7bdb3124d3f")
     version("7.1.1", sha256="d76a16db4a56914383029e241823f7bc2a3d645f2967dd22230f11c11cfe189e")
     version("7.1.0", sha256="87f5532b8b653bd18541cdf6e59923cbd340b300d8ec5046d3e4288d9e5195c0")
@@ -94,7 +95,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     provides("libllvm@18", when="@6.2:6.3")
     provides("libllvm@19", when="@6.4")
     provides("libllvm@20", when="@7.0:7.1")
-    provides("libllvm@22", when="@7.2")
+    provides("libllvm@22", when="@7.2:")
 
     depends_on("c", type="build")  # generated
     depends_on("cxx", type="build")  # generated
@@ -137,7 +138,8 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         sha256="b4774ca19b030890d7b276d12c446400ccf8bc3aa724c7f2e9a73531a7400d69",
         when="@6",
     )
-    patch("002-Add-rpath-to-hiprt.patch", when="@7.0:")
+    patch("002-Add-rpath-to-hiprt.patch", when="@7.0:7")
+    patch("002-Add-rpath-to-hiprt-develop.patch", when="@develop")
 
     # Fix for https://github.com/llvm/llvm-project/issues/78530
     # Patch from https://github.com/llvm/llvm-project/pull/80071
@@ -150,7 +152,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     patch(
         "https://github.com/ROCm/llvm-project/commit/97301a5390f841241e5ed88e26c218882e018cc4.patch?full_index=1",
         sha256="74471ee320c4d839a433c04b9d35db868f2a13c08183297d1a09ec580ca1d7e9",
-        when="@7.2",
+        when="@7.2:",
     )
 
     conflicts("^cmake@3.19.0")
@@ -219,6 +221,15 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             when=f"@{d_version}",
         )
 
+    resource(
+        name="rocm-systems",
+        placement="rocm-systems",
+        git="https://github.com/ROCm/rocm-systems/",
+        branch="develop",
+        commit="a21f8443800cae400ff992ea1def302e64de532f",
+        when="@develop",
+    )
+
     for d_version, d_shasum in [
         ("7.1.0", "e6ef3e62eb0626765c55084c9de5fd19f9b216b11577e71ef36046c0081f1102"),
         ("7.1.1", "b02e7a2b38c408067f3713ff47fe620059a8fe5f47110ab343116448625b7448"),
@@ -233,6 +244,15 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             placement="spirv-llvm-translator",
             when=f"@{d_version}",
         )
+
+    resource(
+        name="spirv-llvm-translator",
+        placement="llvm/projects/spirv-llvm-translator",
+        git="https://github.com/ROCm/SPIRV-LLVM-Translator/",
+        branch="main",
+        commit="3bceafa60788d2f584dba9e7ec3da50b7479a7aa",
+        when="@develop",
+    )
 
     for d_version, d_shasum in [
         ("6.0.2", "737b110d9402509db200ee413fb139a78369cf517453395b96bda52d0aa362b9"),
