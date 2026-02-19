@@ -17,12 +17,17 @@ class Rccl(CMakePackage):
     and reduce-scatter."""
 
     homepage = "https://github.com/ROCm/rccl"
-    git = "https://github.com/ROCm/rccl.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/rccl/archive/rocm-6.4.3.tar.gz"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
     libraries = ["librccl"]
+    version(
+        "develop",
+        branch="develop",
+        commit="a21f8443800cae400ff992ea1def302e64de532f",
+    )
     version("7.2.0", sha256="c884d730711e433b9df88af3cdf003eeeb3df6d98e93a09475f760a2aa017078")
     version("7.1.1", sha256="eaa60bcf62feb3198553f2bcf6dcbfdfcecd0fdfabda41f1dae7d3f15fadbd68")
     version("7.1.0", sha256="50ba486bc8a466a68bff9d6c9d7b3ebf8de9426906720fa44023b5390602b3b8")
@@ -107,7 +112,7 @@ class Rccl(CMakePackage):
         when="@7.1",
     )
     # See https://github.com/ROCm/rocm-systems/pull/3231
-    patch("memory-3231.patch", when="@7.1:")
+    patch("memory-3231.patch", when="@7.1:7")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
@@ -139,6 +144,7 @@ class Rccl(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -147,11 +153,17 @@ class Rccl(CMakePackage):
         depends_on(f"rocm-smi-lib@{ver}", when=f"@{ver}")
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")
 
-    for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0"]:
+    for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "develop"]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
 
     depends_on("googletest@1.11.0:", type="test")
+
+    @property
+    def root_cmakelists_dir(self):
+        if self.spec.satisfies("@develop"):
+            return "projects/rccl"
+        return "."
 
     @classmethod
     def determine_version(cls, lib):

@@ -47,6 +47,7 @@ class Rocsparse(CMakePackage):
     conflicts("+asan", when="os=centos7")
     conflicts("+asan", when="os=centos8")
 
+    version("develop", branch="develop", commit="8f32542c1d765c14da4555c8ed8a67666b0a9c3c")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="420321039b1471a67318a9bccce749ed2293e4aa4615ef9d1b74ed4e03977ee0")
     version("7.1.0", sha256="cdad45e7b23e91a9107e512d9205ef58dcdfaea506b6e5fce3701a2b6e96952c")
@@ -101,12 +102,13 @@ class Rocsparse(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"rocprim@{ver}", when=f"@{ver}")
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
 
-    for ver in ["7.2.0"]:
+    for ver in ["7.2.0", "develop"]:
         depends_on(f"rocblas@{ver}", when=f"@{ver}")
 
     depends_on("googletest@1.11.0:", when="+test")

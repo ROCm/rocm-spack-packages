@@ -28,6 +28,7 @@ class Rocblas(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
+    version("develop", branch="develop", commit="8f32542c1d765c14da4555c8ed8a67666b0a9c3c")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="29d43270ccf5d4818d261993f964d4fce4bd0a55c2b6dde60d1529b6c227a873")
     version("7.1.0", sha256="54f38222d0e58344cf5c86f151d418c071b59145297fd2ed953bb561df1e12c3")
@@ -94,6 +95,7 @@ class Rocblas(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"rocm-smi-lib@{ver}", type="test", when=f"@{ver}")
 
@@ -147,6 +149,7 @@ class Rocblas(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"llvm-amdgpu@{ver}", type="build", when=f"@{ver}")
@@ -167,10 +170,11 @@ class Rocblas(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"hipblaslt@{ver}", when=f"@{ver} +hipblaslt")
 
-    for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0"]:
+    for ver in ["6.4.0", "6.4.1", "6.4.2", "6.4.3", "7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "develop"]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
 
     depends_on("python@3.6:", type="build")
@@ -223,7 +227,7 @@ class Rocblas(CMakePackage):
     patch("0008-link-roctracer.patch", when="@6.4")
     patch("0009-use-rocm-smi-config.patch", when="@6.4:7.1")
     patch("0001-remove-blas-override.patch", when="@7.1")
-    patch("0001-remove-blas-override-7.2.patch", when="@7.2:")
+    patch("0001-remove-blas-override-7.2.patch", when="@7.2")
     patch(
         "https://github.com/ROCm/rocm-libraries/commit/b3b20a3ea53051a14f30c28e577620c0beeea57c.patch?full_index=1",
         sha256="1f436c5ad03c8fdc021f309a1ad84d4356f30c39c4cc940bb8267841561bf5f1",

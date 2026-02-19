@@ -37,6 +37,13 @@ class RocprofilerSystems(CMakePackage):
     license("MIT")
 
     version(
+        "develop",
+        git="https://github.com/ROCm/rocm-systems.git",
+        branch="develop",
+        commit="a21f8443800cae400ff992ea1def302e64de532f",
+        submodules=submodules,
+    )
+    version(
         "7.2.0",
         git="https://github.com/ROCm/rocm-systems.git",
         tag="rocm-7.2.0",
@@ -184,7 +191,7 @@ class RocprofilerSystems(CMakePackage):
     # hard dependencies
     depends_on("cmake@3.16:", type="build")
     depends_on("dyninst@:12", when="@6 ~internal-dyninst")
-    depends_on("dyninst@13", when="@7 ~internal-dyninst")
+    depends_on("dyninst@13", when="@7: ~internal-dyninst")
     depends_on(
         "boost@:1.88"
         "+atomic+chrono+date_time+filesystem+system+thread+timer+container+random+exception",
@@ -196,6 +203,7 @@ class RocprofilerSystems(CMakePackage):
         when="@7.1.1:",
     )
     depends_on("libiberty+pic", when="+internal-dyninst")
+    depends_on("libiberty+pic", when="@develop +internal-tbb")
     depends_on("intel-tbb@2019:2020.3", when="~internal-tbb")
     depends_on("sqlite", when="@7.1:")
     depends_on("elfutils")
@@ -234,6 +242,7 @@ class RocprofilerSystems(CMakePackage):
             "7.1.0",
             "7.1.1",
             "7.2.0",
+            "develop",
         ]:
             depends_on(f"hip@{ver}", when=f"@{ver}")
 
@@ -247,10 +256,11 @@ class RocprofilerSystems(CMakePackage):
             "7.1.0",
             "7.1.1",
             "7.2.0",
+            "develop",
         ]:
             depends_on(f"rocprofiler-sdk@{ver}", when=f"@{ver}")
 
-        for ver in ["7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0"]:
+        for ver in ["7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "develop"]:
             depends_on(f"amdsmi@{ver}", when=f"@{ver}")
 
     # Fix GCC 13 build failure caused by a missing include of <array> in dyninst
