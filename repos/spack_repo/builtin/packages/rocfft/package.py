@@ -28,6 +28,7 @@ class Rocfft(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
+    version("develop", branch="develop", commit="8f32542c1d765c14da4555c8ed8a67666b0a9c3c")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="047e4e93e0b12869bf42136b5eb683df3a1635b01a58bbb25c8861df291ab285")
     version("7.1.0", sha256="8cd4fcca0b8b730135f76bb34f95965348b1809061af65ff6bfbd4ad2ac85e0d")
@@ -110,6 +111,7 @@ class Rocfft(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
