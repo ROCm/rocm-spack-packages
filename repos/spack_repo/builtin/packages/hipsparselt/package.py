@@ -185,7 +185,7 @@ class Hipsparselt(CMakePackage, ROCmPackage):
     patch("0001-update-llvm-path-add-hipsparse-include-dir-for-spack-6.2.patch", when="@6.2")
     patch("0001-update-llvm-path-add-hipsparse-include-dir-for-spack-6.3.patch", when="@6.3")
     patch("0002-add-hipsparse-include.patch", when="@6.4")
-    patch("0003-add-roctracer-inc-dir.patch", when="@7.2:")
+    patch("0003-add-roctracer-inc-dir.patch", when="@7.2:7")
 
     @classmethod
     def determine_version(cls, lib):
