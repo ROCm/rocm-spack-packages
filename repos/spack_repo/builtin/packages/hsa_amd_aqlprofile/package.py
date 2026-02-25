@@ -25,7 +25,7 @@ class HsaAmdAqlprofile(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="a21f8443800cae400ff992ea1def302e64de532f")
+    version("develop", branch="develop", commit="ca89a1ac1cd5a9d446b38311fe8f035b720ac740")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="0137f429a551c431a81f613e114b247d7e269ab9201154d6c87fe7fc86987a66")
     version("7.1.0", sha256="19964494662243773a89c8f20e78a6903b5c886fdb472703b6c9f5bec36d3120")

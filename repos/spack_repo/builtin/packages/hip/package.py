@@ -16,7 +16,7 @@ class Hip(CMakePackage):
     single source code."""
 
     homepage = "https://github.com/ROCm/HIP"
-    git = "https://github.com/ROCm/HIP.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     url = "https://github.com/ROCm/HIP/archive/rocm-6.4.3.tar.gz"
     tags = ["rocm"]
 
@@ -24,7 +24,7 @@ class Hip(CMakePackage):
     libraries = ["libamdhip64"]
 
     license("MIT")
-    version("develop", branch="develop")
+    version("develop", branch="develop", commit="ca89a1ac1cd5a9d446b38311fe8f035b720ac740")
     version("7.2.0", sha256="4a22fcd0baf8df47d2e234f887f5bc03d522ce78928f82d1b0669a55897c4205")
     version("7.1.1", sha256="c64b3219237903d6b27944f236930a1024ed17eb5399165875fbf410fcacf6f4")
     version("7.1.0", sha256="e757a6e4a15d4113cd7cd8a4e9a2a3ff7a6a9ccbc65951179419331214f2784a")
@@ -242,15 +242,6 @@ class Hip(CMakePackage):
             when=f"@{d_version}",
         )
 
-    resource(
-        name="rocm-systems",
-        git="https://github.com/ROCm/rocm-systems/",
-        branch="develop",
-        commit="a21f8443800cae400ff992ea1def302e64de532f",
-        placement="rocm-systems",
-        when="@develop",
-    )
-
     # Add hipcc sources thru the below
     for d_version, d_shasum in [
         ("5.7.1", "d47d27ef2b5de7f49cdfd8547832ac9b437a32e6fc6f0e9c1646f4b704c90aee"),
@@ -316,7 +307,9 @@ class Hip(CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@7.2:"):
+        if self.spec.satisfies("@develop"):
+            return "projects/clr"
+        elif self.spec.satisfies("@7.2:"):
             return "rocm-systems/projects/clr"
         else:
             return "clr"
@@ -520,7 +513,9 @@ class Hip(CMakePackage):
         self.spec.hipcc = join_path(self.prefix.bin, "hipcc")
 
     def patch(self):
-        if self.spec.satisfies("@7.2:"):
+        if self.spec.satisfies("@develop"):
+            clr_dir = "projects/clr"
+        elif self.spec.satisfies("@7.2:"):
             clr_dir = "rocm-systems/projects/clr"
         else:
             clr_dir = "clr"
@@ -600,11 +595,16 @@ class Hip(CMakePackage):
             args.append(self.define("HIP_PLATFORM", "nvidia"))
             if self.spec.satisfies("@:7.1"):
                 hipnv_path = f"{self.stage.source_path}/hipother/hipnv"
-            else:
+            elif self.spec.satisfies("@7.2"):
                 hipnv_path = f"{self.stage.source_path}/rocm-systems/projects/hipother/hipnv"
+            else:
+                hipnv_path = f"{self.stage.source_path}/projects/hipother/hipnv"
             args.append(self.define("HIPNV_DIR", hipnv_path))
-
-        args.append(self.define("HIP_COMMON_DIR", self.stage.source_path))
+        if self.spec.satisfies("@develop"):
+            hip_source_path = f"{self.stage.source_path}/projects/hip"
+        else:
+            hip_source_path = self.stage.source_path
+        args.append(self.define("HIP_COMMON_DIR", hip_source_path))
         args.append(self.define("HIP_CATCH_TEST", "OFF"))
         args.append(self.define("CMAKE_INSTALL_LIBDIR", "lib"))
         args.append(self.define("ROCCLR_PATH", self.stage.source_path + "/clr/rocclr"))
