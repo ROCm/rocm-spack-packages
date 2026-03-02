@@ -42,7 +42,7 @@ jobs:
           OLD_LIBS=$(grep -oh 'commit="[a-f0-9]\{40\}"' "$PACKAGES_DIR/hipblas/package.py" 2>/dev/null | head -1 | sed 's/commit="\(.*\)"/\1/')
           [ -n "$OLD_LIBS" ] && find "$PACKAGES_DIR" -type f -exec sed -i "s/$OLD_LIBS/$ROCM_LIBS/g" {} +
           git diff --name-only > modified_files.txt
-          echo "modified_count=$(wc -l < modified_files.txt)" >> $GITHUB_OUTPUT
+          echo "modified_count=$(wc -l < modified_files.txt | awk '{print $1}')" >> $GITHUB_OUTPUT
 
       - name: Create PR for rocm-libraries
         if: steps.update.outputs.modified_count != '0'
