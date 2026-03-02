@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout rocm-spack-packages
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0faceddc2bcd00000000000000000000000000
         with:
           ref: rocm-spack-ci-changes
 
