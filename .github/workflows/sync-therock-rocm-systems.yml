@@ -42,7 +42,7 @@ jobs:
           OLD_SYS=$(grep -oh 'commit="[a-f0-9]\{40\}"' "$PACKAGES_DIR/hsa_rocr_dev/package.py" 2>/dev/null | head -1 | sed 's/commit="\(.*\)"/\1/')
           [ -n "$OLD_SYS" ] && find "$PACKAGES_DIR" -type f -exec sed -i "s/$OLD_SYS/$ROCM_SYS/g" {} +
           git diff --name-only > modified_files.txt
-          echo "modified_count=$(wc -l < modified_files.txt)" >> $GITHUB_OUTPUT
+          echo "modified_count=$(wc -l < modified_files.txt | awk '{print $1}')" >> $GITHUB_OUTPUT
 
       - name: Create PR for rocm-systems
         if: steps.update.outputs.modified_count != '0'
