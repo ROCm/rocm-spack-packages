@@ -1,7 +1,7 @@
 # When TheRock's rocm-systems submodule is updated, open a PR to rocm-spack-ci-changes
 # that updates the develop version commit in all Spack packages using that git URL.
 #
-# See: https://github.com/ROCm/TheRock
+# Repository: github.com/ROCm/TheRock
 
 name: Sync TheRock rocm-systems
 
@@ -58,10 +58,10 @@ jobs:
           done < modified_files.txt
           git commit -m "Sync rocm-systems develop commit with TheRock submodule
 
-- rocm-systems: ${{ steps.therock.outputs.rocm_systems_commit }}
+          - rocm-systems: ${{ steps.therock.outputs.rocm_systems_commit }}
 
-Updated develop version commit for packages using
-https://github.com/ROCm/rocm-systems.git to match TheRock main."
+          Updated develop version commit for packages using
+          https://github.com/ROCm/rocm-systems.git to match TheRock main."
           git push origin "$BRANCH"
 
           gh pr create \
@@ -70,9 +70,9 @@ https://github.com/ROCm/rocm-systems.git to match TheRock main."
             --title "Sync rocm-systems develop commit with TheRock submodule" \
             --body "Updates the \`develop\` version commit for all packages where \`git = \"https://github.com/ROCm/rocm-systems.git\"\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) main.
 
-**TheRock rocm-systems commit:** \`${{ steps.therock.outputs.rocm_systems_commit }}\`
+            **TheRock rocm-systems commit:** \`${{ steps.therock.outputs.rocm_systems_commit }}\`
 
-This PR was automatically created by the [Sync TheRock rocm-systems](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-rocm-systems.yml) workflow."
+            This PR was automatically created by the [Sync TheRock rocm-systems](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-rocm-systems.yml) workflow."
 
       - name: Log when no update needed
         if: steps.update.outputs.modified_count == '0'

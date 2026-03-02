@@ -1,7 +1,7 @@
 # When TheRock's rocm-libraries submodule is updated, open a PR to rocm-spack-ci-changes
 # that updates the develop version commit in all Spack packages using that git URL.
 #
-# See: https://github.com/ROCm/TheRock
+# Repository: github.com/ROCm/TheRock
 
 name: Sync TheRock rocm-libraries
 
@@ -58,10 +58,10 @@ jobs:
           done < modified_files.txt
           git commit -m "Sync rocm-libraries develop commit with TheRock submodule
 
-- rocm-libraries: ${{ steps.therock.outputs.rocm_libraries_commit }}
+          - rocm-libraries: ${{ steps.therock.outputs.rocm_libraries_commit }}
 
-Updated develop version commit for packages using
-https://github.com/ROCm/rocm-libraries.git to match TheRock main."
+          Updated develop version commit for packages using
+          https://github.com/ROCm/rocm-libraries.git to match TheRock main."
           git push origin "$BRANCH"
 
           gh pr create \
@@ -70,9 +70,9 @@ https://github.com/ROCm/rocm-libraries.git to match TheRock main."
             --title "Sync rocm-libraries develop commit with TheRock submodule" \
             --body "Updates the \`develop\` version commit for all packages where \`git = \"https://github.com/ROCm/rocm-libraries.git\"\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) main.
 
-**TheRock rocm-libraries commit:** \`${{ steps.therock.outputs.rocm_libraries_commit }}\`
+            **TheRock rocm-libraries commit:** \`${{ steps.therock.outputs.rocm_libraries_commit }}\`
 
-This PR was automatically created by the [Sync TheRock rocm-libraries](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-rocm-libraries.yml) workflow."
+            This PR was automatically created by the [Sync TheRock rocm-libraries](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-rocm-libraries.yml) workflow."
 
       - name: Log when no update needed
         if: steps.update.outputs.modified_count == '0'
