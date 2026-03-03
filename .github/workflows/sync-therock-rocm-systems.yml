@@ -44,12 +44,25 @@ jobs:
           git diff --name-only > modified_files.txt
           echo "modified_count=$(wc -l < modified_files.txt | awk '{print $1}')" >> $GITHUB_OUTPUT
 
-      - name: Create PR for rocm-systems
+      - name: Check if branch for this commit already exists
+        id: check_branch
         if: steps.update.outputs.modified_count != '0'
+        run: |
+          BRANCH="therock-sync/sys-${{ steps.therock.outputs.rocm_systems_short }}"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Branch $BRANCH already exists, skipping PR."
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create PR for rocm-systems
+        if: steps.update.outputs.modified_count != '0' && steps.check_branch.outputs.branch_exists != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          BRANCH="therock-sync/sys-${{ steps.therock.outputs.rocm_systems_short }}-$(date +%Y-%m-%d)-${{ github.run_id }}"
+          BRANCH="${{ steps.check_branch.outputs.branch }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
