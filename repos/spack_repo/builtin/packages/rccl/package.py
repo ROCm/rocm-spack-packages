@@ -214,5 +214,5 @@ class Rccl(CMakePackage):
 
     def test_unit(self):
         """Run unit tests"""
-        unit_tests = which(join_path(self.prefix.bin, "rccl-UnitTests"))
+        unit_tests = which(join_path(self.prefix.bin, "rccl-UnitTests"), required=True)
         unit_tests()
