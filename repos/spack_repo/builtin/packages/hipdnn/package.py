@@ -15,7 +15,7 @@ class Hipdnn(CMakePackage):
 
     homepage = "https://github.com/ROCm/hipDNN"
     url = "https://github.com/ROCm/rocm-libraries/archive/refs/tags/rocm-7.1.1.tar.gz"
-    git = "https://github.com/ROCm/hipDNN.git"
+    git = "https://github.com/ROCm/rocm-libraries.git"
 
     maintainers("srekolam", "afzpatel", "renjithravindrankannath")
     tags = ["rocm"]
