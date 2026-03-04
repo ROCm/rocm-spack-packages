@@ -40,7 +40,7 @@ class RocprofilerSystems(CMakePackage):
         "develop",
         git="https://github.com/ROCm/rocm-systems.git",
         branch="develop",
-        commit="93bc01937c91e66f680c0ceba792eb44ebaeba90",
+        commit="ca89a1ac1cd5a9d446b38311fe8f035b720ac740",
         submodules=submodules,
     )
     version(

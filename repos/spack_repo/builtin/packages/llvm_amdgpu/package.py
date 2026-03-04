@@ -43,7 +43,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")
 
     license("Apache-2.0")
-    version("develop", branch="amd-staging", commit="c849bc16b0e49951d313756f20b73c2b28d321d7")
+    version("develop", branch="amd-staging", commit="a2dc42b87c63e686377a69f09ea23aec7550babc")
     version("7.2.0", sha256="e86138d2a63fbcbdf64668d55573b26ae944d0f0ae5a3f5bb59bf7bdb3124d3f")
     version("7.1.1", sha256="d76a16db4a56914383029e241823f7bc2a3d645f2967dd22230f11c11cfe189e")
     version("7.1.0", sha256="87f5532b8b653bd18541cdf6e59923cbd340b300d8ec5046d3e4288d9e5195c0")
@@ -225,7 +225,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         placement="rocm-systems",
         git="https://github.com/ROCm/rocm-systems/",
         branch="develop",
-        commit="93bc01937c91e66f680c0ceba792eb44ebaeba90",
+        commit="ca89a1ac1cd5a9d446b38311fe8f035b720ac740",
         when="@develop",
     )
 
