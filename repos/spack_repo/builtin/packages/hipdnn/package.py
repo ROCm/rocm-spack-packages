@@ -23,6 +23,7 @@ class Hipdnn(CMakePackage):
 
     license("MIT")
 
+    version("develop", branch="develop", commit="7567d83979edcd7f5f0aad22de23ef71ed78f920")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="2c00694c6131192354b0e785e4dcb06a302e4b7891ec50ca30927e05ba7b368b")
 
@@ -47,7 +48,7 @@ class Hipdnn(CMakePackage):
     depends_on("spdlog")
     depends_on("googletest")
 
-    for ver in ["7.1.1", "7.2.0"]:
+    for ver in ["7.1.1", "7.2.0", "develop"]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")

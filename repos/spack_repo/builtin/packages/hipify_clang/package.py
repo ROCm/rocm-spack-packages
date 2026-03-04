@@ -22,7 +22,7 @@ class HipifyClang(CMakePackage):
     executables = ["hipify-perl"]
 
     license("MIT")
-    version("develop", branch="amd-staging", commit="a6338cc8df369c774d9585e57b5c89c50c33d0d9")
+    version("develop", branch="amd-staging", commit="05290949a8a85659d0187f0c76fbaa9ab077e5b8")
     version("7.2.0", sha256="ddea52cc4b624f5a48413cc390d0308c9b889d9dd6699077f4cfb7d014417a9f")
     version("7.1.1", sha256="abb80ecc0ea82fd847a95a9c2dd1d182990a7a495f1eab6126e7c5e9dc8b68a7")
     version("7.1.0", sha256="9fb4e739f116b5a5b8c437808c71c6c1f31dd6184c9be21d67d4b8bf1d91b4f2")
