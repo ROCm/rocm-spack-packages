@@ -27,7 +27,7 @@ class Rocthrust(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="7203bc7c4c2adc8afeb318ce5bbdf3e1204a4260")
+    version("develop", branch="develop", commit="7567d83979edcd7f5f0aad22de23ef71ed78f920")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="995f9498402f207d04aac1edeb845abea295f6f132151ae1e04a6f0d0dc5edf5")
     version("7.1.0", sha256="12b83d4e06b72019d213c2627da32a8d913b0d8acf7d89a9d2ef81e42143456d")
