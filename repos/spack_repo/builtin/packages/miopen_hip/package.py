@@ -28,7 +28,7 @@ class MiopenHip(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="7567d83979edcd7f5f0aad22de23ef71ed78f920")
+    version("develop", branch="develop", commit="a6080604d094e9c78802379537d9dea44090daf5")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="98c72a2b5ca541d6c172facdf0f15729207ab52ca9af36c00e2480c5b27c5b99")
     version("7.1.0", sha256="3fa0a7c8ef959ad889aac0109e6bf74de2a54f7e3ab057f98e2dc4fb65eb1599")
