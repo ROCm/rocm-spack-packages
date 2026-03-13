@@ -26,6 +26,8 @@ spack:
         - ~cuda
         - +rocm
         - amdgpu_target=gfx90a
+    opengl:
+      buildable: false
     amdsmi:
       require: "@develop"
     comgr:
@@ -115,7 +117,6 @@ spack:
   - miopen-hip
   - rccl
   - rocblas
-  - rocjpeg
   - rocdecode
   - rocm-cmake
   - rocm-core
