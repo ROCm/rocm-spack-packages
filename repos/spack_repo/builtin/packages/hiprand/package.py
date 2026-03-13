@@ -30,7 +30,7 @@ class Hiprand(CMakePackage, CudaPackage, ROCmPackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="7567d83979edcd7f5f0aad22de23ef71ed78f920")
+    version("develop", branch="develop", commit="a6080604d094e9c78802379537d9dea44090daf5")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="f53767646725a3c76be9287196df3e2ae17370c0db3774feba7ca90cfec69785")
     version("7.1.0", sha256="c3bd27e74f0769fe46ea5067e05001f909dc83f01000a22e04e6a0e3d6f4dfc8")
