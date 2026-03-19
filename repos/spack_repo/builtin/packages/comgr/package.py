@@ -28,7 +28,7 @@ class Comgr(CMakePackage):
             url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="amd-staging", commit="376decc81273216c8f6cd0045cd067c280a6779f")
+    version("develop", branch="amd-staging", commit="91093752427717d188761db02e8590b77bf5ac58")
     version("7.2.0", sha256="e86138d2a63fbcbdf64668d55573b26ae944d0f0ae5a3f5bb59bf7bdb3124d3f")
     version("7.1.1", sha256="d76a16db4a56914383029e241823f7bc2a3d645f2967dd22230f11c11cfe189e")
     version("7.1.0", sha256="87f5532b8b653bd18541cdf6e59923cbd340b300d8ec5046d3e4288d9e5195c0")
