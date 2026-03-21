@@ -30,7 +30,7 @@ class Hipsparse(CMakePackage, CudaPackage, ROCmPackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="a6080604d094e9c78802379537d9dea44090daf5")
+    version("develop", branch="develop", commit="5454e9e2dab35be133b216ea27d99fbce42187df")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="b001834d8e65c3878d1a69d08803d5b6ce4fe623e78099fe51cb146d0ffa10e7")
     version("7.1.0", sha256="1d399d16a388279f71c8de19e6ccfde35a3dedc5ba49858bca7a377aa08198c0")
