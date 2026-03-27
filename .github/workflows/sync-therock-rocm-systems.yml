@@ -1,0 +1,96 @@
+# When TheRock's rocm-systems submodule is updated, open a PR to rocm-spack-ci-changes
+# that updates the develop version commit in all Spack packages using that git URL.
+#
+# Repository: github.com/ROCm/TheRock
+
+name: Sync TheRock rocm-systems
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout rocm-spack-packages
+        uses: actions/checkout@v4
+        with:
+          ref: rocm-spack-ci-changes
+
+      - name: Get TheRock rocm-systems commit
+        id: therock
+        run: |
+          git clone --depth 1 https://github.com/ROCm/TheRock.git therock
+          cd therock
+          ROCM_SYSTEMS=$(git rev-parse HEAD:rocm-systems)
+          echo "rocm_systems_commit=$ROCM_SYSTEMS" >> $GITHUB_OUTPUT
+          echo "rocm_systems_short=${ROCM_SYSTEMS:0:7}" >> $GITHUB_OUTPUT
+
+      - name: Update rocm-systems develop commits in package.py files
+        id: update
+        env:
+          ROCM_SYS: ${{ steps.therock.outputs.rocm_systems_commit }}
+        run: |
+          PACKAGES_DIR="${{ github.workspace }}/repos/spack_repo/builtin/packages"
+          OLD_SYS=$(grep -oh 'commit="[a-f0-9]\{40\}"' "$PACKAGES_DIR/hsa_rocr_dev/package.py" 2>/dev/null | head -1 | sed 's/commit="\(.*\)"/\1/')
+          [ -n "$OLD_SYS" ] && find "$PACKAGES_DIR" -type f -exec sed -i "s/$OLD_SYS/$ROCM_SYS/g" {} +
+          git diff --name-only > modified_files.txt
+          echo "modified_count=$(wc -l < modified_files.txt | awk '{print $1}')" >> $GITHUB_OUTPUT
+
+      - name: Check if branch for this commit already exists
+        id: check_branch
+        if: steps.update.outputs.modified_count != '0'
+        run: |
+          BRANCH="therock-sync/sys-${{ steps.therock.outputs.rocm_systems_short }}"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Branch $BRANCH already exists, skipping PR."
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create PR for rocm-systems
+        if: steps.update.outputs.modified_count != '0' && steps.check_branch.outputs.branch_exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="${{ steps.check_branch.outputs.branch }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          while IFS= read -r f; do
+            [ -n "$f" ] && git add "$f"
+          done < modified_files.txt
+          git commit -m "Sync rocm-systems develop commit with TheRock submodule
+
+          - rocm-systems: ${{ steps.therock.outputs.rocm_systems_commit }}
+
+          Updated develop version commit for packages using
+          https://github.com/ROCm/rocm-systems.git to match TheRock main."
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --base rocm-spack-ci-changes \
+            --head "$BRANCH" \
+            --reviewer afzpatel \
+            --title "Sync rocm-systems develop commit with TheRock submodule" \
+            --body "Updates the \`develop\` version commit for all packages where \`git = \"https://github.com/ROCm/rocm-systems.git\"\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) main.
+
+            **TheRock rocm-systems commit:** \`${{ steps.therock.outputs.rocm_systems_commit }}\`
+
+            This PR was automatically created by the [Sync TheRock rocm-systems](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-rocm-systems.yml) workflow."
+
+      - name: Log when no update needed
+        if: steps.update.outputs.modified_count == '0'
+        run: |
+          echo "No rocm-systems update needed. Current develop commit already matches TheRock."
+          echo "rocm-systems: ${{ steps.therock.outputs.rocm_systems_commit }}"
+

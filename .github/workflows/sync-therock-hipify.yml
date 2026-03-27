@@ -1,0 +1,95 @@
+# When TheRock's compiler/hipify submodule is updated, open a PR to rocm-spack-ci-changes
+# that updates the develop version commit in all Spack packages using that git URL.
+#
+# Repository: github.com/ROCm/TheRock
+
+name: Sync TheRock hipify (hipify-clang)
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout rocm-spack-packages
+        uses: actions/checkout@v4
+        with:
+          ref: rocm-spack-ci-changes
+
+      - name: Get TheRock compiler/hipify commit
+        id: therock
+        run: |
+          git clone --depth 1 https://github.com/ROCm/TheRock.git therock
+          cd therock
+          HIPIFY=$(git rev-parse HEAD:compiler/hipify)
+          echo "hipify_commit=$HIPIFY" >> $GITHUB_OUTPUT
+          echo "hipify_short=${HIPIFY:0:7}" >> $GITHUB_OUTPUT
+
+      - name: Update hipify-clang develop commits in package.py files
+        id: update
+        env:
+          HIPIFY: ${{ steps.therock.outputs.hipify_commit }}
+        run: |
+          PACKAGES_DIR="${{ github.workspace }}/repos/spack_repo/builtin/packages"
+          OLD_HIPIFY=$(grep -oh 'commit="[a-f0-9]\{40\}"' "$PACKAGES_DIR/hipify_clang/package.py" 2>/dev/null | head -1 | sed 's/commit="\(.*\)"/\1/')
+          [ -n "$OLD_HIPIFY" ] && find "$PACKAGES_DIR" -type f -exec sed -i "s/$OLD_HIPIFY/$HIPIFY/g" {} +
+          git diff --name-only > modified_files.txt
+          echo "modified_count=$(wc -l < modified_files.txt | awk '{print $1}')" >> $GITHUB_OUTPUT
+
+      - name: Check if branch for this commit already exists
+        id: check_branch
+        if: steps.update.outputs.modified_count != '0'
+        run: |
+          BRANCH="therock-sync/hipify-${{ steps.therock.outputs.hipify_short }}"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Branch $BRANCH already exists, skipping PR."
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create PR for hipify (hipify-clang)
+        if: steps.update.outputs.modified_count != '0' && steps.check_branch.outputs.branch_exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="${{ steps.check_branch.outputs.branch }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          while IFS= read -r f; do
+            [ -n "$f" ] && git add "$f"
+          done < modified_files.txt
+          git commit -m "Sync hipify (hipify-clang) develop commit with TheRock submodule
+
+          - compiler/hipify: ${{ steps.therock.outputs.hipify_commit }}
+
+          Updated develop version commit for packages using
+          https://github.com/ROCm/HIPIFY.git to match TheRock main."
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --base rocm-spack-ci-changes \
+            --head "$BRANCH" \
+            --reviewer afzpatel \
+            --title "Sync hipify (hipify-clang) develop commit with TheRock submodule" \
+            --body "Updates the \`develop\` version commit for all packages where \`git = \"https://github.com/ROCm/HIPIFY.git\"\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) compiler/hipify.
+
+            **TheRock compiler/hipify commit:** \`${{ steps.therock.outputs.hipify_commit }}\`
+
+            This PR was automatically created by the [Sync TheRock hipify](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-hipify.yml) workflow."
+
+      - name: Log when no update needed
+        if: steps.update.outputs.modified_count == '0'
+        run: |
+          echo "No hipify update needed. Current develop commit already matches TheRock."
+          echo "compiler/hipify: ${{ steps.therock.outputs.hipify_commit }}"
