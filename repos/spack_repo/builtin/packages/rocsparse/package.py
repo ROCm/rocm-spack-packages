@@ -47,7 +47,7 @@ class Rocsparse(CMakePackage):
     conflicts("+asan", when="os=centos7")
     conflicts("+asan", when="os=centos8")
 
-    version("develop", branch="develop", commit="5454e9e2dab35be133b216ea27d99fbce42187df")
+    version("develop", branch="develop", commit="6c5f99ac16a1c4b4af04ab24ab356f71f6ca8d6c")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="420321039b1471a67318a9bccce749ed2293e4aa4615ef9d1b74ed4e03977ee0")
     version("7.1.0", sha256="cdad45e7b23e91a9107e512d9205ef58dcdfaea506b6e5fce3701a2b6e96952c")
