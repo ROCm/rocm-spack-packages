@@ -138,7 +138,6 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         when="@6",
     )
     patch("002-Add-rpath-to-hiprt.patch", when="@7.0:7")
-    patch("002-Add-rpath-to-hiprt-develop.patch", when="@develop")
 
     # Fix for https://github.com/llvm/llvm-project/issues/78530
     # Patch from https://github.com/llvm/llvm-project/pull/80071
@@ -151,7 +150,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     patch(
         "https://github.com/ROCm/llvm-project/commit/97301a5390f841241e5ed88e26c218882e018cc4.patch?full_index=1",
         sha256="74471ee320c4d839a433c04b9d35db868f2a13c08183297d1a09ec580ca1d7e9",
-        when="@7.2:",
+        when="@7.2",
     )
 
     conflicts("^cmake@3.19.0")
