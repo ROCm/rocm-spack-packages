@@ -33,7 +33,7 @@ class Hipsparselt(CMakePackage, ROCmPackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="6c5f99ac16a1c4b4af04ab24ab356f71f6ca8d6c")
+    version("develop", branch="develop", commit="f3ce54135f865e39116f48efa1990ec3928c6118")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="2c00694c6131192354b0e785e4dcb06a302e4b7891ec50ca30927e05ba7b368b")
     version("7.1.0", sha256="d9e138a15e8195a7e9b5e15240e50c557b830d50a2bafa27db14dad3884dbfd8")
