@@ -29,7 +29,7 @@ class RocmCore(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="ccd356f07e7972dacd0fe5a6355ca4f9e53c833d")
+    version("develop", branch="develop", commit="96e30b429c074f8a3fcf66be9c014df4d7cbc681")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="0171b82a4d028d57035d0d57a01a058f50f1a23959d230cdeab14972dcd94da8")
     version("7.1.0", sha256="3c7e990ff4da60119c8575982660331bf636f63a9c68c6a344d410b2bdfa5d39")
