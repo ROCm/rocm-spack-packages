@@ -189,7 +189,7 @@ class RocprofilerSdk(CMakePackage):
     patch(
         "https://github.com/ROCm/rocm-systems/commit/ef7253365c420ca486f074b9e9119a222e30fea0.patch?full_index=1",
         sha256="05a71386d12d7fc98a40c025dc65a804556e01f381d1101ea244f35f29edd3d8",
-        when="@7.2:",
+        when="@7.2",
     )
 
     @property

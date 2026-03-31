@@ -49,6 +49,7 @@ class Hipdnn(CMakePackage):
     depends_on("flatbuffers")
     depends_on("spdlog")
     depends_on("googletest")
+    depends_on("llvm@20", when="@develop")
 
     for ver in ["7.1.1", "7.2.0", "develop"]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
