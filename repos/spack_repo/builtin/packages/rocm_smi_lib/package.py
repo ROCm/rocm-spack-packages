@@ -28,7 +28,7 @@ class RocmSmiLib(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="b9e258cf82ce8a71f2ed2c27e8874945b049a942")
+    version("develop", branch="develop", commit="478a7a43c6141a5e5cc50cbf5c9319fb7d7232e3")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="f47550aeeb2827a3ae857c35e16f5a9042de70d911abab80bebe4840c9ecd4fd")
     version("7.1.0", sha256="eab6c7a85deb992b5cf511cdf7d0a6f8a93e46a0bfb6cf66c73d95c26dc4ce5e")
