@@ -41,7 +41,7 @@ class RocprofilerSdk(CMakePackage):
     version(
         "develop",
         branch="develop",
-        commit="b9e258cf82ce8a71f2ed2c27e8874945b049a942",
+        commit="478a7a43c6141a5e5cc50cbf5c9319fb7d7232e3",
         submodules=submodules,
     )
     version(

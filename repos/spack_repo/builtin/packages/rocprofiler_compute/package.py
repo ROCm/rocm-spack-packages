@@ -24,7 +24,7 @@ class RocprofilerCompute(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="b9e258cf82ce8a71f2ed2c27e8874945b049a942")
+    version("develop", branch="develop", commit="478a7a43c6141a5e5cc50cbf5c9319fb7d7232e3")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="cf5d577edc1bed185f9c424868ec42952ccd2f9c2679e6daeb3bc788536cf182")
     version("7.1.0", sha256="11a65dac6e4099b4f2bb438320ef8206bb130a8a31bba52e90b594cdc235969b")
