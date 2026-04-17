@@ -248,7 +248,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         placement="llvm/projects/spirv-llvm-translator",
         git="https://github.com/ROCm/SPIRV-LLVM-Translator/",
         branch="main",
-        commit="d575617fd44ef55eb6c8857383e82c2ed4f89ff2",
+        commit="aa7c842d4ec5b7015022ae6c6b91a4365bb6b91d",
         when="@develop",
     )
 
