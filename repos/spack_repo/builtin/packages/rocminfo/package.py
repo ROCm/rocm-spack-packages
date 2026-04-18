@@ -24,7 +24,7 @@ class Rocminfo(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="ca4b97ef2cc606883313c196cdb5a31c7095b6c1")
+    version("develop", branch="develop", commit="92b74318762433ef4b353489b4a1c5a79690b991")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="a1ff6d08e0c7ff653bb323964ff2badf6aa1d75aeb2d69248599b0133370fa7e")
     version("7.1.0", sha256="fdf1e08392d3645d64696c5de7c116a1ea7ff3c70f19c0cb46c9eece7c00062c")
