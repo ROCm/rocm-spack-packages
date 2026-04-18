@@ -25,7 +25,7 @@ class Hipdnn(CMakePackage):
 
     license("MIT")
 
-    version("develop", branch="develop", commit="c0f85f4071fa8954d302dfa51568474a43bb1f7d")
+    version("develop", branch="develop", commit="64b5f8120f4163776de6ced376d349921deeaf1d")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="2c00694c6131192354b0e785e4dcb06a302e4b7891ec50ca30927e05ba7b368b")
 
