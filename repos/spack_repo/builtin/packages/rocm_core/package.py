@@ -30,6 +30,7 @@ class RocmCore(CMakePackage):
         return url.format(version)
 
     version("develop", branch="develop", commit="92b74318762433ef4b353489b4a1c5a79690b991")
+    version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="0171b82a4d028d57035d0d57a01a058f50f1a23959d230cdeab14972dcd94da8")
     version("7.1.0", sha256="3c7e990ff4da60119c8575982660331bf636f63a9c68c6a344d410b2bdfa5d39")
@@ -82,6 +83,7 @@ class RocmCore(CMakePackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "7.2.1",
         "develop",
     ]:
         depends_on("llvm-amdgpu", when=f"@{ver}+asan")

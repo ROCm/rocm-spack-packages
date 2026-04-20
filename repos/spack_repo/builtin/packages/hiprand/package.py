@@ -31,6 +31,7 @@ class Hiprand(CMakePackage, CudaPackage, ROCmPackage):
         return url.format(version)
 
     version("develop", branch="develop", commit="c0f85f4071fa8954d302dfa51568474a43bb1f7d")
+    version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="f53767646725a3c76be9287196df3e2ae17370c0db3774feba7ca90cfec69785")
     version("7.1.0", sha256="c3bd27e74f0769fe46ea5067e05001f909dc83f01000a22e04e6a0e3d6f4dfc8")
@@ -110,6 +111,7 @@ class Hiprand(CMakePackage, CudaPackage, ROCmPackage):
         "7.1.0",
         "7.1.1",
         "7.2.0",
+        "7.2.1",
         "develop",
     ]:
         depends_on("rocrand@" + ver, when="+rocm @" + ver)
@@ -161,4 +163,7 @@ class Hiprand(CMakePackage, CudaPackage, ROCmPackage):
 
         if self.spec.satisfies("@:6.3.1"):
             args.append(self.define("BUILD_FILE_REORG_BACKWARD_COMPATIBILITY", True))
+        if "auto" not in self.spec.variants["amdgpu_target"]:
+            args.append(self.define_from_variant("GPU_TARGETS", "amdgpu_target"))
+
         return args
