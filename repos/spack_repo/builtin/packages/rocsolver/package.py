@@ -50,7 +50,7 @@ class Rocsolver(CMakePackage):
     conflicts("+asan", when="os=centos7")
     conflicts("+asan", when="os=centos8")
 
-    version("develop", branch="develop", commit="c0f85f4071fa8954d302dfa51568474a43bb1f7d")
+    version("develop", branch="develop", commit="64b5f8120f4163776de6ced376d349921deeaf1d")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="15a29454239dbbac34219d484247f5721d4af08ca1b1f3973ebcbd7895184ae6")
