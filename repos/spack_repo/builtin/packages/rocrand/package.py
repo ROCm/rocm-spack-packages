@@ -29,7 +29,7 @@ class Rocrand(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="64b5f8120f4163776de6ced376d349921deeaf1d")
+    version("develop", branch="develop", commit="f9a8d1c2f88812124f735f31a3b4a916cd601bc2")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="15c33c595aa8e4de1d8b3736df9eaf2ceba7914ffebe718f0997b0da28215d9e")
