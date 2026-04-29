@@ -25,7 +25,7 @@ class HipblasCommon(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="54cfd4e62b4cdadab20bf7bdb083e43ed6fa8300")
+    version("develop", branch="develop", commit="3a902afc8e98aae71ba64be36907094f0d85d051")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="1baedf7562c7afdca5f688b9117949941082b30cd5ea8630b30e9ac299cf56ea")
