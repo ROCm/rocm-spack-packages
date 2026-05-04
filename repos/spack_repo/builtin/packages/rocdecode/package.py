@@ -23,7 +23,7 @@ class Rocdecode(CMakePackage):
     version(
         "develop",
         branch="develop",
-        commit="1c488dc360cde892ff6894e342c77b420eed275f",
+        commit="986a18c9c29e26e5a88eddf71224cb7c7e5eb8af",
     )
     version("7.2.1", sha256="59e162fcc472aefcf68cfe28b50316612572ca9f1256696537282f703310abaa")
     version("7.2.0", sha256="70c3828364a289098123111aa27d37bab7238065b6ee8ceae35810ad4842bf0a")
