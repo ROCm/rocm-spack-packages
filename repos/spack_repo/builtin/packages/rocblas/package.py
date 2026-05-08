@@ -28,7 +28,7 @@ class Rocblas(CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="89b3fc4c28002f33621fe9160df5c560439646e6")
+    version("develop", branch="develop", commit="f664f44c90ae22e860738f8c9793a019eb1975e1")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="29d43270ccf5d4818d261993f964d4fce4bd0a55c2b6dde60d1529b6c227a873")
