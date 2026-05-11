@@ -30,7 +30,7 @@ class RoctracerDev(CMakePackage, ROCmPackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="79e85e1468f96a867108043c953e9547c13b4c5e")
+    version("develop", branch="develop", commit="83e9908b71a872bff98f6bac1120f02cfb7c9d69")
     version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
     version("7.1.1", sha256="dec80803c6d2d684759172145177849efda65672645b95a2f2ad1a84335043bb")
