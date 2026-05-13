@@ -196,7 +196,7 @@ class Hipblaslt(CMakePackage):
         when="@7.2",
     )
     # https://github.com/ROCm/rocm-libraries/pull/5990
-    patch("0005-add-offload-bundler-path.patch", when="@7.1:")
+    patch("0005-add-offload-bundler-path.patch", when="@7.1:7.2")
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         if self.spec.satisfies("@:6.4"):

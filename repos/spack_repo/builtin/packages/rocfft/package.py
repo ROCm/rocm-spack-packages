@@ -80,6 +80,7 @@ class Rocfft(CMakePackage):
     depends_on("cmake@3.16:", type="build")
     depends_on("python@3.6:", type="build")
     depends_on("sqlite@3.36:")
+    depends_on("sqlite@3.51.3:", when="@develop")
 
     depends_on("googletest@1.10.0:", type="test")
     depends_on("fftw@3.3.8:", type="test")

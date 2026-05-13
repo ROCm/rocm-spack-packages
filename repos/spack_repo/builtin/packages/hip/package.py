@@ -538,9 +538,10 @@ class Hip(CMakePackage):
                 f"{clr_dir}/hipamd/hip-config-amd.cmake.in",
                 string=True,
             )
-        perl = self.spec["perl"].command
-        with working_dir(f"{clr_dir}/hipamd/bin"):
-            filter_file("^#!/usr/bin/perl", f"#!{perl}", "roc-obj-extract", "roc-obj-ls")
+        if self.spec.satisfies("@:7.2"):
+            perl = self.spec["perl"].command
+            with working_dir(f"{clr_dir}/hipamd/bin"):
+               filter_file("^#!/usr/bin/perl", f"#!{perl}", "roc-obj-extract", "roc-obj-ls")
         if self.spec.satisfies("@5.7"):
             with working_dir("hipcc/bin"):
                 filter_shebang("hipconfig")
