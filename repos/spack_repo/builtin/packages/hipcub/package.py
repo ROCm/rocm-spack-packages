@@ -26,7 +26,7 @@ class Hipcub(CMakePackage, CudaPackage, ROCmPackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="8d33c2d2d1aeb19a6aab0d71ff2f8f3be26c3aee")
+    version("develop", branch="develop", commit="1ac760bd32369f1dd50f90147884bb27d310ee1e")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="2a7dc48ba7feb0f21d62844df7e1ef075249e9d2a491b76c8eb8f60335eb24b1")
