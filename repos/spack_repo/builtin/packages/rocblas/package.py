@@ -29,6 +29,7 @@ class Rocblas(CMakePackage):
         return url.format(version)
 
     version("develop", branch="develop", commit="ad84daa81c2b8cce3139909828e7d61c391c8736")
+    version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
     version("7.1.1", sha256="29d43270ccf5d4818d261993f964d4fce4bd0a55c2b6dde60d1529b6c227a873")
@@ -97,6 +98,7 @@ class Rocblas(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
     ]:
         depends_on(f"rocm-smi-lib@{ver}", type="test", when=f"@{ver}")
 
@@ -153,6 +155,7 @@ class Rocblas(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -175,13 +178,10 @@ class Rocblas(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
-        for tgt in ROCmPackage.amdgpu_targets:
-            depends_on(
-                f"hipblaslt@{ver} amdgpu_target={tgt}",
-                when=f"@{ver} +hipblaslt amdgpu_target={tgt}",
-            )
+        depends_on(f"hipblaslt@{ver}", when=f"@{ver} +hipblaslt")
 
     for ver in [
         "6.4.0",
@@ -194,6 +194,7 @@ class Rocblas(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")

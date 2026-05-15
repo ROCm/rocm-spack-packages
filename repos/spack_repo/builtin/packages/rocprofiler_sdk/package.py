@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
+import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.rocm import ROCmPackage
@@ -37,12 +38,19 @@ class RocprofilerSdk(CMakePackage):
     tags = ["rocm"]
 
     maintainers("afzpatel", "srekolam", "renjithravindrankannath")
+    executables = ["rocprofv3"]
 
     license("MIT")
     version(
         "develop",
         branch="develop",
         commit="d342d97fde47e8f6fd7f0298a62abc558a77b4c0",
+        submodules=submodules,
+    )
+    version(
+        "7.2.3",
+        tag="rocm-7.2.3",
+        commit="c2d94761153e1033a91744842dfc66eddd631fde",
         submodules=submodules,
     )
     version(
@@ -173,7 +181,7 @@ class RocprofilerSdk(CMakePackage):
 
     for ver in ["6.2.4", "6.3.0", "6.3.1", "6.3.2", "6.3.3", "6.4.0", "6.4.1", "6.4.2", "6.4.3"]:
         depends_on(f"aqlprofile@{ver}", when=f"@{ver}")
-    for ver in ["7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "7.2.1", "develop"]:
+    for ver in ["7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "7.2.1", "7.2.3", "develop"]:
         depends_on(f"hsa-amd-aqlprofile@{ver}", when=f"@{ver}")
 
     for ver in [
@@ -192,6 +200,7 @@ class RocprofilerSdk(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -211,6 +220,7 @@ class RocprofilerSdk(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
         for tgt in ROCmPackage.amdgpu_targets:
@@ -247,3 +257,9 @@ class RocprofilerSdk(CMakePackage):
                 env.prepend_path("LD_LIBRARY_PATH", self.spec["hsa-amd-aqlprofile"].prefix.lib)
             else:
                 env.prepend_path("LD_LIBRARY_PATH", self.spec["aqlprofile"].prefix.lib)
+
+    @classmethod
+    def determine_version(cls, exe):
+        output = Executable(exe)("--version", output=str, error=str)
+        match = re.search(r"rocm_version: (\d+\.\d+\.\d+)", output)
+        return match.group(1) if match else None

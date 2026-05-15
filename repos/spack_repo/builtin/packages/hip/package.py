@@ -25,6 +25,7 @@ class Hip(CMakePackage):
 
     license("MIT")
     version("develop", branch="develop", commit="d342d97fde47e8f6fd7f0298a62abc558a77b4c0")
+    version("7.2.3", sha256="e6ab65cb2a236eee0e1f2738457367dffc3ce1e8dfb050ac22b7712e35aa896e")
     version("7.2.1", sha256="40a27fc18d08ea4f28b5e0990d38a3fec10ff491a2d5adb647b3faa5016873de")
     version("7.2.0", sha256="4a22fcd0baf8df47d2e234f887f5bc03d522ce78928f82d1b0669a55897c4205")
     version("7.1.1", sha256="c64b3219237903d6b27944f236930a1024ed17eb5399165875fbf410fcacf6f4")
@@ -121,6 +122,7 @@ class Hip(CMakePackage):
             "7.1.1",
             "7.2.0",
             "7.2.1",
+            "7.2.3",
             "develop",
         ]:
             depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
@@ -153,6 +155,7 @@ class Hip(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
         depends_on(f"hipcc@{ver}", when=f"@{ver}")
@@ -175,6 +178,7 @@ class Hip(CMakePackage):
         "7.1.1",
         "7.2.0",
         "7.2.1",
+        "7.2.3",
         "develop",
     ]:
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
@@ -234,6 +238,7 @@ class Hip(CMakePackage):
         )
 
     for d_version, d_shasum in [
+        ("7.2.3", "e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b"),
         ("7.2.1", "201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f"),
         ("7.2.0", "728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638"),
     ]:
@@ -477,7 +482,6 @@ class Hip(CMakePackage):
     def setup_dependent_build_environment(
         self, env: EnvironmentModifications, dependent_spec: Spec
     ) -> None:
-
         env.set("HIPCC_COMPILE_FLAGS_APPEND", "")
         if self.spec.satisfies("+rocm"):
             paths = self.get_paths()
