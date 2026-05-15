@@ -15,11 +15,12 @@ def submodules(package):
         "projects/rocprofiler-systems/external/perfetto",
         "projects/rocprofiler-systems/external/elfio",
         "projects/rocprofiler-systems/external/dyninst",
-        "projects/rocprofiler-systems/external/PTL",
         "projects/rocprofiler-systems/external/papi",
         "projects/rocprofiler-systems/external/pybind11",
         "projects/rocprofiler-systems/examples/openmp/external/ompvv",
     ]
+    if package.spec.satisfies("@:7.2"):
+        submodules.append("projects/rocprofiler-systems/external/PTL")
     return submodules
 
 
@@ -218,6 +219,7 @@ class RocprofilerSystems(CMakePackage):
     depends_on("libiberty+pic", when="+internal-dyninst")
     depends_on("libiberty+pic", when="@develop +internal-tbb")
     depends_on("intel-tbb@2019:2020.3", when="~internal-tbb")
+    depends_on("intel-tbb@2019:2022.3", when="~internal-tbb @develop")
     depends_on("sqlite", when="@7.1:")
     depends_on("elfutils")
     depends_on("m4")
@@ -293,6 +295,8 @@ class RocprofilerSystems(CMakePackage):
         when="%rocmcc",
         working_dir="external/timemory",
     )
+
+    patch("001_dyninst_boost.patch")
 
     @property
     def root_cmakelists_dir(self):
