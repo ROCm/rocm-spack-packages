@@ -80,7 +80,8 @@ jobs:
           gh pr create \
             --base rocm-spack-ci-changes \
             --head "$BRANCH" \
-            --reviewer afzpatel renjithravindrankannath \
+            --reviewer afzpatel \
+            --reviewer renjithravindrankannath \
             --title "Sync amd-llvm (llvm-amdgpu) develop commit with TheRock submodule" \
             --body "Updates the \`develop\` version commit for all packages where \`git = \"https://github.com/ROCm/llvm-project.git\"\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) compiler/amd-llvm.
 
