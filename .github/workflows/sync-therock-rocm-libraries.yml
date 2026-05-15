@@ -67,7 +67,7 @@ jobs:
           gh pr create \
             --base rocm-spack-ci-changes \
             --head "$BRANCH" \
-            --reviewer afzpatel \
+            --reviewer afzpatel renjithravindrankannath \
             --title "Sync rocm-libraries develop commit with TheRock submodule" \
             --body "Updates the \`develop\` version commit for all packages where \`git = \"https://github.com/ROCm/rocm-libraries.git\"\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) main.
 
