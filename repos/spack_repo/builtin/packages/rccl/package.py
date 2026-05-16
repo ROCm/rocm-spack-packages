@@ -26,7 +26,7 @@ class Rccl(CMakePackage):
     version(
         "develop",
         branch="develop",
-        commit="d342d97fde47e8f6fd7f0298a62abc558a77b4c0",
+        commit="39213316d216a88bb3ea38d262224c6a2d3abb08",
     )
     version("7.2.3", sha256="0cb83b3a0552d8b38b05c182753c68dd15432d99769da6aead889e30f14367d7")
     version("7.2.1", sha256="a373bcfe03cf2243a97536860a81940998c36a0b324d9e10830e3cd2c3f8b523")
