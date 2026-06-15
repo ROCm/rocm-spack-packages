@@ -218,7 +218,7 @@ class RocprofilerSystems(CMakePackage):
     )
     depends_on("libiberty+pic", when="+internal-dyninst")
     depends_on("libiberty+pic", when="@develop +internal-tbb")
-    depends_on("intel-tbb@2019:2020.3", when="~internal-tbb")
+    depends_on("intel-tbb@2019:2020.3", when="~internal-tbb @:7")
     depends_on("intel-tbb@2019:2022.3", when="~internal-tbb @develop")
     depends_on("sqlite", when="@7.1:")
     depends_on("elfutils")
