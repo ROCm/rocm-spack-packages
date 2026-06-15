@@ -296,8 +296,6 @@ class RocprofilerSystems(CMakePackage):
         working_dir="external/timemory",
     )
 
-    patch("001_dyninst_boost.patch")
-
     @property
     def root_cmakelists_dir(self):
         if self.spec.satisfies("@:7.1"):
