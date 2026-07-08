@@ -29,7 +29,7 @@ class Amdsmi(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="develop", commit="8b2f7145a33519b7f397b1c3636abddb7823538f")
+    version("develop", branch="develop", commit="3c151980d99e67f33546274ddd7283f55f9a7237")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
     version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
