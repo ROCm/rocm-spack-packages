@@ -286,6 +286,7 @@ class Hipblaslt(CMakePackage):
                 "projects/hipblaslt/cmake/hipblaslt_python.cmake",
                 string=True,
             )
+        if self.spec.satisfies("@7.1:7"):
             filter_file(
                 "${PROJECT_BINARY_DIR}/lib",
                 ":".join(["${PROJECT_BINARY_DIR}/lib", joblib_path]),
