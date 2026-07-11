@@ -30,7 +30,7 @@ class HsaRocrDev(CMakePackage):
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")
     libraries = ["libhsa-runtime64"]
 
-    version("develop", branch="develop", commit="90992fca21a8ad228375e3e6ad65bb566c022072")
+    version("develop", branch="develop", commit="e711c9e7361a0c9d74b6d5c09c08c8ac2eee0253")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
     version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
