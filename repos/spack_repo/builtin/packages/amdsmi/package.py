@@ -62,6 +62,9 @@ class Amdsmi(CMakePackage):
     depends_on("python@3.6:")
     depends_on("py-virtualenv")
     depends_on("pkgconfig")
+    depends_on("libdrm")
+
+    # https://github.com/ROCm/amdsmi/issues/167
     depends_on("libdrm@:2.4.124", when="@:7.2")
     depends_on("py-pyyaml")
     depends_on("libnl", when="@develop")
