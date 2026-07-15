@@ -1,0 +1,97 @@
+# When TheRock's compiler/spirv-llvm-translator submodule is updated, open a PR to
+# rocm-spack-ci-changes that updates the develop spirv-llvm-translator resource
+# commit in the llvm-amdgpu Spack package.
+#
+# Repository: github.com/ROCm/TheRock
+
+name: Sync TheRock spirv-llvm-translator
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout rocm-spack-packages
+        uses: actions/checkout@v4
+        with:
+          ref: rocm-spack-ci-changes
+
+      - name: Get TheRock compiler/spirv-llvm-translator commit
+        id: therock
+        run: |
+          git clone --depth 1 https://github.com/ROCm/TheRock.git therock
+          cd therock
+          SPIRV=$(git rev-parse HEAD:compiler/spirv-llvm-translator)
+          echo "spirv_commit=$SPIRV" >> $GITHUB_OUTPUT
+          echo "spirv_short=${SPIRV:0:7}" >> $GITHUB_OUTPUT
+
+      - name: Update spirv-llvm-translator develop commit in llvm-amdgpu
+        id: update
+        env:
+          SPIRV: ${{ steps.therock.outputs.spirv_commit }}
+        run: |
+          PACKAGE="${{ github.workspace }}/repos/spack_repo/builtin/packages/llvm_amdgpu/package.py"
+          OLD_SPIRV=$(grep -A2 'SPIRV-LLVM-Translator/' "$PACKAGE" | grep -oh 'commit="[a-f0-9]\{40\}"' | sed 's/commit="\(.*\)"/\1/')
+          [ -n "$OLD_SPIRV" ] && sed -i "s/$OLD_SPIRV/$SPIRV/g" "$PACKAGE"
+          git diff --name-only > modified_files.txt
+          echo "modified_count=$(wc -l < modified_files.txt | awk '{print $1}')" >> $GITHUB_OUTPUT
+
+      - name: Check if branch for this commit already exists
+        id: check_branch
+        if: steps.update.outputs.modified_count != '0'
+        run: |
+          BRANCH="therock-sync/spirv-${{ steps.therock.outputs.spirv_short }}"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "branch_exists=true" >> $GITHUB_OUTPUT
+            echo "Branch $BRANCH already exists, skipping PR."
+          else
+            echo "branch_exists=false" >> $GITHUB_OUTPUT
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Create PR for spirv-llvm-translator
+        if: steps.update.outputs.modified_count != '0' && steps.check_branch.outputs.branch_exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="${{ steps.check_branch.outputs.branch }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          while IFS= read -r f; do
+            [ -n "$f" ] && git add "$f"
+          done < modified_files.txt
+          git commit -m "Sync spirv-llvm-translator develop commit with TheRock submodule
+
+          - compiler/spirv-llvm-translator: ${{ steps.therock.outputs.spirv_commit }}
+
+          Updated develop spirv-llvm-translator resource commit in llvm-amdgpu to match
+          TheRock main."
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --base rocm-spack-ci-changes \
+            --head "$BRANCH" \
+            --reviewer afzpatel \
+            --reviewer renjithravindrankannath \
+            --title "Sync spirv-llvm-translator develop commit with TheRock submodule" \
+            --body "Updates the \`develop\` spirv-llvm-translator resource commit in \`llvm-amdgpu\` to match the current submodule commit in [TheRock](https://github.com/ROCm/TheRock) compiler/spirv-llvm-translator.
+
+            **TheRock compiler/spirv-llvm-translator commit:** \`${{ steps.therock.outputs.spirv_commit }}\`
+
+            This PR was automatically created by the [Sync TheRock spirv-llvm-translator](https://github.com/${{ github.repository }}/actions/workflows/sync-therock-spirv-llvm-translator.yml) workflow."
+
+      - name: Log when no update needed
+        if: steps.update.outputs.modified_count == '0'
+        run: |
+          echo "No spirv-llvm-translator update needed. Current develop commit already matches TheRock."
+          echo "compiler/spirv-llvm-translator: ${{ steps.therock.outputs.spirv_commit }}"
