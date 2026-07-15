@@ -254,7 +254,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         placement="llvm/projects/spirv-llvm-translator",
         git="https://github.com/ROCm/SPIRV-LLVM-Translator/",
         branch="main",
-        commit="fb08e83ae872775acfeaee53fda3ccf99a04ba53",
+        commit="ddeda6468d45cf1e888a0e81e50bc170756a335b",
         when="@develop",
     )
 
@@ -400,6 +400,9 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             args.append("-DRUNTIMES_amdgcn-amd-amdhsa_LLVM_ENABLE_PER_TARGET_RUNTIME_DIR=ON")
             spirv_dir = os.path.join(self.stage.source_path, "llvm/projects/spirv-llvm-translator")
             args.append(self.define("LLVM_EXTERNAL_SPIRV_LLVM_TRANSLATOR_SOURCE_DIR", spirv_dir))
+        if self.spec.satisfies("@7.13:"):
+            args.append(self.define("LLVM_EXTERNAL_PROJECTS", "rocm-device-libs;spirv-llvm-translator"))
+            llvm_runtimes.append("flang-rt")
         args.append(self.define("LLVM_ENABLE_PROJECTS", llvm_projects))
         args.append(self.define("LLVM_ENABLE_RUNTIMES", llvm_runtimes))
 
