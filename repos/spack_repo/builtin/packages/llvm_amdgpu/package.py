@@ -43,7 +43,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")
 
     license("Apache-2.0")
-    version("develop", branch="amd-staging", commit="caaa58b9c589af4778de62858fd6b663be791470")
+    version("develop", branch="amd-staging", commit="e9c9efb1a15416a06c7d17dfe0ab38f35b648e3b")
 
     version("7.2.3", sha256="6239fa0c72b150cf0a325676264d3030a67389dec4fca7103f563a70c2b70114")
     version("7.2.1", sha256="4d3449d758e3f79b336248b0207a394eda04ba5cdd48a4088e135ddf769127fa")
