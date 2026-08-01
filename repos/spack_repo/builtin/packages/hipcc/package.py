@@ -27,7 +27,7 @@ class Hipcc(CMakePackage):
             url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
         return url.format(version)
 
-    version("develop", branch="amd-staging", commit="2a67d831a09cc538194bd595279ee91258570c10")
+    version("develop", branch="amd-staging", commit="998a696feca902c689c53383e48d29494f9edba7")
     version("7.2.3", sha256="6239fa0c72b150cf0a325676264d3030a67389dec4fca7103f563a70c2b70114")
     version("7.2.1", sha256="4d3449d758e3f79b336248b0207a394eda04ba5cdd48a4088e135ddf769127fa")
     version("7.2.0", sha256="e86138d2a63fbcbdf64668d55573b26ae944d0f0ae5a3f5bb59bf7bdb3124d3f")
