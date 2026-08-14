@@ -24,7 +24,7 @@ class Hip(CMakePackage):
     libraries = ["libamdhip64"]
 
     license("MIT")
-    version("develop", branch="develop", commit="92115a2941982a384de161be3f78cf9bff547027")
+    version("develop", branch="develop", commit="af82d0abb401f1e0bccebdb69d5053371507b6b5")
     version("7.2.3", sha256="e6ab65cb2a236eee0e1f2738457367dffc3ce1e8dfb050ac22b7712e35aa896e")
     version("7.2.1", sha256="40a27fc18d08ea4f28b5e0990d38a3fec10ff491a2d5adb647b3faa5016873de")
     version("7.2.0", sha256="4a22fcd0baf8df47d2e234f887f5bc03d522ce78928f82d1b0669a55897c4205")
