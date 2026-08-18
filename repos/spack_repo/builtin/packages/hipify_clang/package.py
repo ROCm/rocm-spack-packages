@@ -21,7 +21,7 @@ class HipifyClang(ROCmLibrary, CMakePackage):
     executables = ["hipify-perl"]
 
     license("MIT")
-    version("develop", branch="amd-staging", commit="1c0fdf11502f06c4b4e978e35a1135240ea38e6f")
+    version("develop", branch="amd-staging", commit="fd6bd537f9f8512d1e4bf4d80290864ba88b257c")
     version("7.2.3", sha256="5d0adbdffa866f3ca3e94da8ac92304dc97272dcd9c3440b15943fc0bc7c8ad8")
     version("7.2.1", sha256="1d5504a69024491c582e224445df4c917b0b5ee3b0830c0909119eca97b70e9f")
     version("7.2.0", sha256="ddea52cc4b624f5a48413cc390d0308c9b889d9dd6699077f4cfb7d014417a9f")
