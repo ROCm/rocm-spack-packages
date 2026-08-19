@@ -5,6 +5,7 @@
 import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary
 
 from spack.package import *
 
@@ -24,12 +25,17 @@ def submodules(package):
     return submodules
 
 
-class RocprofilerSystems(CMakePackage):
+class RocprofilerSystems(ROCmLibrary, CMakePackage):
     """Application Profiling, Tracing, and Analysis"""
 
     homepage = "https://github.com/ROCm/rocprofiler-systems"
     git = "https://github.com/ROCm/rocm-systems.git"
-    url = "https://github.com/ROCm/rocprofiler-systems/archive/refs/tags/rocm-6.4.3.tar.gz"
+
+    rocm_url_map = [
+        ("7.1.1", "https://github.com/ROCm/rocprofiler-systems/archive/refs/tags/rocm-{0}.tar.gz"),
+        ("7.2.3", "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
     executables = ["rocprof-sys-sample"]
     tags = ["rocm"]
 
@@ -42,6 +48,9 @@ class RocprofilerSystems(CMakePackage):
         git="https://github.com/ROCm/rocm-systems.git",
         branch="develop",
         commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7",
+        "7.13.0",
+        git="https://github.com/ROCm/rocm-systems.git",
+        tag="therock-7.13",
         submodules=submodules,
     )
     version(
@@ -191,7 +200,18 @@ class RocprofilerSystems(CMakePackage):
             "(target application can use any MPI installation)"
         ),
     )
-    variant("internal-dyninst", default=False, description="build internal dyninst")
+    variant(
+        "internal-dyninst",
+        default=False,
+        when="@:7.2",
+        description="build internal dyninst",
+    )
+    variant(
+        "internal-dyninst",
+        default=True,
+        when="@7.13:",
+        description="build internal dyninst",
+    )
     variant("internal-tbb", default=False, description="build internal tbb")
 
     conflicts("%rocmcc", when="+internal-tbb")
@@ -260,6 +280,7 @@ class RocprofilerSystems(CMakePackage):
             "7.2.1",
             "7.2.3",
             "develop",
+            "7.13.0",
         ]:
             depends_on(f"hip@{ver}", when=f"@{ver}")
 
@@ -280,6 +301,11 @@ class RocprofilerSystems(CMakePackage):
             depends_on(f"rocprofiler-sdk@{ver}", when=f"@{ver}")
 
         for ver in ["7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "7.2.1", "7.2.3", "develop"]:
+            "7.13.0",
+        ]:
+            depends_on(f"rocprofiler-sdk@{ver}", when=f"@{ver}")
+
+        for ver in ["7.0.0", "7.0.2", "7.1.0", "7.1.1", "7.2.0", "7.2.1", "7.2.3", "7.13.0"]:
             depends_on(f"amdsmi@{ver}", when=f"@{ver}")
 
     # Fix GCC 13 build failure caused by a missing include of <array> in dyninst

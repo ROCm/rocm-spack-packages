@@ -85,7 +85,7 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
 
     variant(
         "smm",
-        default="libxsmm",
+        default="blas",
         values=("libxsmm", "blas"),
         description="Library for small matrix multiplications",
         when="@:2.9.1",
@@ -96,6 +96,12 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
         values=("blas", "libxs"),
         description="Library for small matrix multiplications",
         when="@2.10:",
+    )
+    variant(
+        "libxsmm",
+        default=True,
+        description="Enable LIBXSMM JIT kernels for LIBXS",
+        when="@2.10: smm=libxs",
     )
 
     variant(
@@ -125,6 +131,9 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
 
     with when("smm=libxsmm"):
         depends_on("libxsmm@1.11:")
+        # DBCSR <= 2.9.1 requires the legacy libxsmmext interface,
+        # which was removed in libxsmm 2.0.
+        depends_on("libxsmm@:1", when="@:2.9.1")
 
     depends_on("cmake@3.10:", type="build")
     depends_on("cmake@3.12:", type="build", when="@2.1:")
@@ -138,6 +147,10 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
 
     depends_on("hipblas", when="+rocm")
     depends_on("libxs@1:+fortran", when="@2.10: smm=libxs")
+    depends_on(
+        "libxsmm@2: build_system=cmake",
+        when="+libxsmm",
+    )
 
     # Several packages provide "opencl" (incl. ICD/loader), e.g., "cuda"
     with when("+opencl"):
@@ -240,9 +253,10 @@ class Dbcsr(CMakePackage, CudaPackage, ROCmPackage):
             self.define_from_variant("BUILD_TESTING", "tests"),
         ]
 
-        if "smm=libxs" in spec:
+        if spec.satisfies("@2.10:"):
             args += [
-                "-DUSE_LIBXS=ON",
+                self.define("USE_LIBXS", spec.satisfies("smm=libxs")),
+                self.define_from_variant("USE_LIBXSMM", "libxsmm"),
             ]
 
         if "@:2.9.1" in spec:

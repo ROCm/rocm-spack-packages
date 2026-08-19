@@ -28,6 +28,12 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
         return url.format(version)
 
     version("develop", branch="develop", commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7")
+    rocm_url_map = [
+        ("7.1.1", "https://github.com/ROCm/rocprofiler-compute/archive/rocm-{0}.tar.gz"),
+        ("7.2.3", "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
+    version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
     version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
     version("7.2.0", sha256="728ea7e9bf16e6ed217a0fd1a8c9afaba2dae2e7908fa4e27201e67c803c5638")
@@ -62,7 +68,31 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
     depends_on("py-textual", when="@7.0:")
     depends_on("py-textual-plotext", when="@7.0:")
     depends_on("py-sqlalchemy@2.0.42:", when="@7.1:")
-    depends_on("py-textual-fspicker@0.4.3:", when="@7.2:")
+    depends_on("py-textual-fspicker@0.4.3:", when="@7.1:")
+    for ver in [
+        "6.3.2",
+        "6.3.3",
+        "6.4.0",
+        "6.4.1",
+        "6.4.2",
+        "6.4.3",
+        "7.0.0",
+        "7.0.2",
+        "7.1.0",
+        "7.1.1",
+        "7.2.0",
+        "7.2.1",
+        "7.2.3",
+        "7.13.0",
+    ]:
+        depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
+        depends_on(f"hip@{ver}", when=f"@{ver}")
+        depends_on(f"rocm-cmake@{ver}", when=f"@{ver}")
+
+    for ver in [
+        "7.13.0",
+    ]:
+        depends_on("rocprofiler-sdk", when=f"@{ver}")
 
     depends_on("rocprofiler-sdk@develop", when="@develop")
 
@@ -73,6 +103,13 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
         else:
             return "projects/rocprofiler-compute"
 
+    def setup_build_environment(self, env: EnvironmentModifications) -> None:
+        if self.spec.satisfies("@:7.0"):
+            env.set("CXX", self.spec["hip"].hipcc)
+        else:
+            env.set("CC", f"{self.spec['llvm-amdgpu'].prefix}/bin/amdclang")
+            env.set("CXX", f"{self.spec['llvm-amdgpu'].prefix}/bin/amdclang++")
+
     def cmake_args(self):
         args = [self.define("ENABLE_TESTS", self.run_tests)]
         return args
@@ -81,3 +118,13 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
     def before_cmake(self):
         if self.spec.satisfies("@:7.1"):
             touch(join_path(self.stage.source_path, "VERSION.sha"))
+
+        # For version 7.2+, create the pyyaml vendored directory structure
+        # to prevent git submodule initialization
+        if self.spec.satisfies("@7.2:"):
+            pyyaml_vendor_path = join_path(
+                self.stage.source_path, "projects/rocprofiler-compute/src/vendored/pyyaml/lib/yaml"
+            )
+            mkdirp(pyyaml_vendor_path)
+            # Create a dummy __init__.py to make it a valid Python package
+            touch(join_path(pyyaml_vendor_path, "__init__.py"))

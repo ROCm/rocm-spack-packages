@@ -7,12 +7,12 @@ import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
 from spack_repo.builtin.build_systems.cuda import CudaPackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary, ROCmPackage
 
 from spack.package import *
 
 
-class Hipfft(CMakePackage, CudaPackage, ROCmPackage):
+class Hipfft(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
     """hipFFT is an FFT marshalling library. Currently, hipFFT supports
     either rocFFT or cuFFT as backends.hipFFT exports an interface that
     does not require the client to change, regardless of the chosen backend.
@@ -35,6 +35,12 @@ class Hipfft(CMakePackage, CudaPackage, ROCmPackage):
         return url.format(version)
 
     version("develop", branch="develop", commit="f18b55d6dcc3d81ccc8e127f6a5a15b70b02d990")
+    rocm_url_map = [
+        ("7.1.1", "https://github.com/ROCm/hipfft/archive/refs/tags/rocm-{0}.tar.gz"),
+        ("7.2.3", "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
+    version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
     version("7.2.0", sha256="8ad5f4a11f1ed8a7b927f2e65f24083ca6ce902a42021a66a815190a91ccb654")
@@ -115,6 +121,7 @@ class Hipfft(CMakePackage, CudaPackage, ROCmPackage):
         "7.2.1",
         "7.2.3",
         "develop",
+        "7.13.0",
     ]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
         for tgt in itertools.chain(["auto"], amdgpu_targets):
