@@ -15,7 +15,7 @@ class RustBootstrap(Package):
     homepage = "https://www.rust-lang.org"
     url = "https://static.rust-lang.org/dist/rust-1.65.0-aarch64-apple-darwin.tar.gz"
 
-    maintainers("alecbcs")
+    maintainers("alecbcs", "mcmehrtens")
 
     skip_version_audit = ["platform=windows"]
 
@@ -250,9 +250,9 @@ class RustBootstrap(Package):
     def fixup_rpaths(self):
         # set rpaths of libLLVM.so and rust-ldd to zlib's lib directory
         rpaths = self.spec["zlib-api"].libs.directories
+        patchelf = which("patchelf", required=True)
 
         for binary in find(self.stage.source_path, ["libLLVM.so.*", "rust-lld"]):
-            patchelf = Executable("patchelf")
             patchelf("--add-rpath", ":".join(rpaths), binary)
 
     def install(self, spec, prefix):

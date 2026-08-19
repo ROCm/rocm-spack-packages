@@ -55,6 +55,9 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
     # Note: remember to update `provides("libllvm")` according to major versions listed
 
     # Latest stable
+    version("22.1.8", sha256="ad18b70e287954c3d62bc7e0b86e7b7af2adf87bcfce21c15fe717f101d7aace")
+    version("22.1.7", sha256="da1578ea1faf2050e4b1923fce150b5656db1dbdeda71fe02498ac04f35b03d3")
+    version("22.1.6", sha256="ba534c6835a5b9c2162c806e269799fe41fca952a3c25baff1afcff23841ec2b")
     version("22.1.5", sha256="263e99bd0b590664a886b0332037ff060e108f4e7b0310b7c8277208858f867d")
     version("22.1.4", sha256="e813bf8da34ec2b7c108c4067937380fa7d5a04a13f4fe13555dbe388482d69f")
     version("22.1.3", sha256="7e144bd6da8177757434cc0dfd1476122f143413df379c6d6cf03843512b5a9e")
@@ -359,6 +362,12 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
 
     # gold support, required for some features
     depends_on("binutils+gold+ld+plugins+headers", when="+gold")
+
+    # if gcc was built with newer binutils than the system default, we need the
+    # same for our own build
+    depends_on(
+        "binutils+gas+ld+plugins~libiberty", type=("build", "link", "run"), when="%gcc+binutils"
+    )
 
     # Older LLVM do not build with newer compilers, and vice versa
     with when("@16:"):
@@ -915,6 +924,18 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
             env.set("FC", join_path(self.spec.prefix.bin, "flang"))
             env.set("F77", join_path(self.spec.prefix.bin, "flang"))
 
+    @classmethod
+    def runtime_constraints(cls, *, spec, pkg):
+        if spec.satisfies("%gcc"):
+            gcc = spec["gcc"]
+            for language in ("c", "cxx", "fortran"):
+                pkg("*").depends_on(
+                    f"gcc-runtime@{gcc.version}:",
+                    when=f"%[deptypes=build virtuals={language}] {spec.name}/{spec.dag_hash()}",
+                    type="link",
+                    description=f"Inject gcc-runtime when llvm is used as a {language} compiler",
+                )
+
     root_cmakelists_dir = "llvm"
 
     def cmake_args(self):
@@ -1227,6 +1248,9 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
             for cfg in cfg_files:
                 with open(os.path.join(self.prefix.bin, cfg), "w") as f:
                     print(gcc_install_dir_flag, file=f)
+                    # make sure LLVM prefers binutils prefix over system default
+                    if self.spec.satisfies("^binutils"):
+                        print(f"-B{self.spec['binutils'].prefix.bin}", file=f)
 
     def llvm_config(self, *args, result=None, **kwargs):
         lc = Executable(self.prefix.bin.join("llvm-config"))
