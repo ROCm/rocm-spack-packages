@@ -92,8 +92,8 @@ class HipifyClang(ROCmLibrary, CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")

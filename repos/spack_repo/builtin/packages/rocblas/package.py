@@ -164,8 +164,8 @@ class Rocblas(ROCmLibrary, CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"llvm-amdgpu@{ver}", type="build", when=f"@{ver}")
@@ -188,8 +188,8 @@ class Rocblas(ROCmLibrary, CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         for tgt in itertools.chain(["auto"], amdgpu_targets):
             depends_on(
@@ -209,8 +209,8 @@ class Rocblas(ROCmLibrary, CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
 

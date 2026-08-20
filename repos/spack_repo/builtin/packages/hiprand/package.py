@@ -121,8 +121,8 @@ class Hiprand(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         depends_on("rocrand@" + ver, when="+rocm @" + ver)
         depends_on(f"rocm-cmake@{ver}", type="build", when=f"@{ver}")

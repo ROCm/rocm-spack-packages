@@ -91,8 +91,8 @@ class Rocdecode(ROCmLibrary, CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
 
@@ -108,8 +108,8 @@ class Rocdecode(ROCmLibrary, CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
 

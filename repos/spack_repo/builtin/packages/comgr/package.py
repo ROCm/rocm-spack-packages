@@ -100,8 +100,8 @@ class Comgr(CMakePackage):
         "7.2.0",
         "7.2.1",
         "7.2.3",
-        "develop",
         "7.13.0",
+        "develop",
     ]:
         # llvm libs are linked statically, so this *could* be a build dep
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
