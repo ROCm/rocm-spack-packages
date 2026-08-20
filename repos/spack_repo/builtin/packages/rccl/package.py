@@ -17,18 +17,11 @@ class Rccl(CMakePackage):
     and reduce-scatter."""
 
     homepage = "https://github.com/ROCm/rccl"
-    git = "https://github.com/ROCm/rocm-systems.git"
-    url = "https://github.com/ROCm/rccl/archive/rocm-6.4.3.tar.gz"
     git = "https://github.com/ROCm/rccl.git"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
     libraries = ["librccl"]
-    version(
-        "develop",
-        branch="develop",
-        commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7",
-    )
 
     def url_for_version(self, version):
         if version <= Version("7.2.3"):
@@ -39,6 +32,12 @@ class Rccl(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{0}.{1}.tar.gz"
             return url.format(version[0], version[1])
 
+    version(
+        "develop",
+        branch="develop",
+        commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7",
+    )
+    version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="0cb83b3a0552d8b38b05c182753c68dd15432d99769da6aead889e30f14367d7")
     version("7.2.1", sha256="a373bcfe03cf2243a97536860a81940998c36a0b324d9e10830e3cd2c3f8b523")
@@ -126,8 +125,10 @@ class Rccl(CMakePackage):
         when="@7.1",
     )
     # See https://github.com/ROCm/rocm-systems/pull/3231
-    patch("memory-3231.patch", when="@7.1:7")
     patch("memory-3231.patch", when="@7.1:7.2")
+
+    # https://github.com/ROCm/rocm-systems/pull/8704
+    patch("rocm-core-8704.patch", when="@7.14:")
 
     depends_on("c", type="build")
     depends_on("cxx", type="build")
@@ -162,6 +163,7 @@ class Rccl(CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
@@ -184,6 +186,7 @@ class Rccl(CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
@@ -193,10 +196,7 @@ class Rccl(CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@develop"):
-            return "projects/rccl"
-        return "."
-        if self.spec.satisfies("@7.13:"):
+        if self.spec.satisfies("@develop,7.13:"):
             return join_path(super().root_cmakelists_dir, "projects", "rccl")
         else:
             return super().root_cmakelists_dir

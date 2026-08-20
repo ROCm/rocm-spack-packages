@@ -24,19 +24,13 @@ class Hiprand(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
     libraries = ["libhiprand"]
     license("MIT")
 
-    def url_for_version(self, version):
-        if version <= Version("7.1.1"):
-            url = "https://github.com/ROCm/hipRAND/archive/refs/tags/rocm-{0}.tar.gz"
-        else:
-            url = "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"
-        return url.format(version)
-
-    version("develop", branch="develop", commit="f18b55d6dcc3d81ccc8e127f6a5a15b70b02d990")
     rocm_url_map = [
         ("7.1.1", "https://github.com/ROCm/hipRAND/archive/refs/tags/rocm-{0}.tar.gz"),
         ("7.2.3", "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
+    version("develop", branch="develop", commit="f18b55d6dcc3d81ccc8e127f6a5a15b70b02d990")
+    version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
     version("7.2.1", sha256="bc5140deec3b1c93c13796a8a6d2cb7e50aa87fd89f60f87c8d801d66f2fd156")
@@ -122,6 +116,7 @@ class Hiprand(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on("rocrand@" + ver, when="+rocm @" + ver)

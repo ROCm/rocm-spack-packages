@@ -70,7 +70,7 @@ class Mpich(MpichEnvironmentModifications, AutotoolsPackage, CudaPackage, ROCmPa
     list_url = "https://www.mpich.org/static/downloads/"
     list_depth = 1
 
-    maintainers("raffenet", "yfguo")
+    maintainers("raffenet", "hzhou")
     tags = ["e4s"]
     executables = ["^mpichversion$"]
 
@@ -78,6 +78,7 @@ class Mpich(MpichEnvironmentModifications, AutotoolsPackage, CudaPackage, ROCmPa
 
     license("mpich2")
 
+    version("develop", submodules=True)
     version("develop", submodules=True)
     version("5.0.1", sha256="8c1832a13ddacf071685069f5fadfd1f2877a29e1a628652892c65211b1f3327")
     version("5.0.0", sha256="e9350e32224283e95311f22134f36c98e3cd1c665d17fae20a6cc92ed3cffe11")
@@ -164,6 +165,13 @@ supported, and netmod is ignored if device is ch3:sock.""",
         "of applications that do heavy concurrent MPI"
         "communications. Set MPIR_CVAR_CH4_NUM_VCIS=<N> to "
         "enable multiple vcis at runtime.",
+    )
+
+    variant(
+        "mpi5-abi",
+        default=False,
+        when="@5:",
+        description="Enable MPI-5 standard ABI.",
     )
 
     variant(
@@ -554,6 +562,9 @@ supported, and netmod is ignored if device is ch3:sock.""",
             )
 
         config_args.extend(self.enable_or_disable("fortran"))
+
+        if spec.satisfies("@5:"):
+            config_args.extend(self.enable_or_disable("mpi-abi", variant="mpi5-abi"))
 
         if "+slurm" in spec:
             config_args.append("--with-slurm=yes")

@@ -17,8 +17,6 @@ class Hip(ROCmLibrary, CMakePackage):
     single source code."""
 
     homepage = "https://github.com/ROCm/HIP"
-    git = "https://github.com/ROCm/rocm-systems.git"
-    url = "https://github.com/ROCm/HIP/archive/rocm-6.4.3.tar.gz"
     git = "https://github.com/ROCm/HIP.git"
     tags = ["rocm"]
 
@@ -26,7 +24,6 @@ class Hip(ROCmLibrary, CMakePackage):
     libraries = ["libamdhip64"]
 
     license("MIT")
-    version("develop", branch="develop", commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7")
 
     rocm_url_map = [
         ("7.1.1", "https://github.com/ROCm/HIP/archive/rocm-{0}.tar.gz"),
@@ -34,6 +31,8 @@ class Hip(ROCmLibrary, CMakePackage):
         (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
 
+    version("develop", branch="develop", commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7")
+    version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e6ab65cb2a236eee0e1f2738457367dffc3ce1e8dfb050ac22b7712e35aa896e")
     version("7.2.1", sha256="40a27fc18d08ea4f28b5e0990d38a3fec10ff491a2d5adb647b3faa5016873de")
@@ -91,7 +90,6 @@ class Hip(ROCmLibrary, CMakePackage):
         # hipcc likes to add `-lnuma` by default :(
         # ref https://github.com/ROCm/HIP/pull/2202
         depends_on("numactl")
-        depends_on("simde", when="@develop")
 
         for ver in [
             "5.7.0",
@@ -134,6 +132,7 @@ class Hip(ROCmLibrary, CMakePackage):
             "7.2.1",
             "7.2.3",
             "7.13.0",
+            "7.14.0",
             "develop",
         ]:
             depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
@@ -168,6 +167,7 @@ class Hip(ROCmLibrary, CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on(f"hipcc@{ver}", when=f"@{ver}")
@@ -192,6 +192,7 @@ class Hip(ROCmLibrary, CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
@@ -199,6 +200,7 @@ class Hip(ROCmLibrary, CMakePackage):
     # roc-obj-ls requirements
     depends_on("perl-file-which")
     depends_on("perl-uri-encode")
+    depends_on("simde", when="@develop")
 
     # Add hip-clr sources thru the below
     for d_version, d_shasum in [
@@ -264,18 +266,6 @@ class Hip(ROCmLibrary, CMakePackage):
             placement="rocm-systems",
             when=f"@{d_version}",
         )
-    # TheRock therock-7.13 release (rocm-systems super-repo)
-    for d_version, d_shasum in [
-        ("7.13", "86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c"),
-    ]:
-        resource(
-            name="rocm-systems",
-            placement="rocm-systems",
-            url=f"https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{d_version}.tar.gz",
-            sha256=d_shasum,
-            when=f"@{d_version}",
-        )
-
     # Add hipcc sources thru the below
     for d_version, d_shasum in [
         ("5.7.1", "d47d27ef2b5de7f49cdfd8547832ac9b437a32e6fc6f0e9c1646f4b704c90aee"),
@@ -341,7 +331,7 @@ class Hip(ROCmLibrary, CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@develop"):
+        if self.spec.satisfies("@develop,7.13:"):
             return "projects/clr"
         elif self.spec.satisfies("@7.2:"):
             return "rocm-systems/projects/clr"
@@ -546,7 +536,7 @@ class Hip(ROCmLibrary, CMakePackage):
         self.spec.hipcc = join_path(self.prefix.bin, "hipcc")
 
     def patch(self):
-        if self.spec.satisfies("@develop"):
+        if self.spec.satisfies("@develop,7.13:"):
             clr_dir = "projects/clr"
         elif self.spec.satisfies("@7.2:"):
             clr_dir = "rocm-systems/projects/clr"
@@ -566,10 +556,6 @@ class Hip(ROCmLibrary, CMakePackage):
                 f"{clr_dir}/hipamd/hip-config-amd.cmake.in",
                 string=True,
             )
-        if self.spec.satisfies("@:7.2"):
-            perl = self.spec["perl"].command
-            with working_dir(f"{clr_dir}/hipamd/bin"):
-               filter_file("^#!/usr/bin/perl", f"#!{perl}", "roc-obj-extract", "roc-obj-ls")
         perl = self.spec["perl"].command
         if self.spec.satisfies("@:7.2"):
             with working_dir(f"{clr_dir}/hipamd/bin"):
@@ -633,22 +619,17 @@ class Hip(ROCmLibrary, CMakePackage):
             args.append(self.define("HIP_PLATFORM", "nvidia"))
             if self.spec.satisfies("@:7.1"):
                 hipnv_path = f"{self.stage.source_path}/hipother/hipnv"
-            elif self.spec.satisfies("@7.2"):
-                hipnv_path = f"{self.stage.source_path}/rocm-systems/projects/hipother/hipnv"
-            else:
+            elif self.spec.satisfies("@7.13:"):
                 hipnv_path = f"{self.stage.source_path}/projects/hipother/hipnv"
+            else:
+                hipnv_path = f"{self.stage.source_path}/rocm-systems/projects/hipother/hipnv"
             args.append(self.define("HIPNV_DIR", hipnv_path))
-        if self.spec.satisfies("@develop"):
-            hip_source_path = f"{self.stage.source_path}/projects/hip"
-        else:
-            hip_source_path = self.stage.source_path
-        args.append(self.define("HIP_COMMON_DIR", hip_source_path))
 
-        # For version 7.13.0, the source structure is different (rocm-systems super-repo)
-        if self.spec.satisfies("@7.13.0:"):
-            hip_common_dir = self.stage.source_path + "/rocm-systems/projects/hip"
-            rocclr_path = self.stage.source_path + "/rocm-systems/projects/clr/rocclr"
-            opencl_path = self.stage.source_path + "/rocm-systems/projects/clr/opencl"
+        # HIP 7.13+ sources provide the CLR projects directly.
+        if self.spec.satisfies("@develop,7.13.0:"):
+            hip_common_dir = self.stage.source_path + "/projects/hip"
+            rocclr_path = self.stage.source_path + "/projects/clr/rocclr"
+            opencl_path = self.stage.source_path + "/projects/clr/opencl"
         elif self.spec.satisfies("@7.2:"):
             hip_common_dir = self.stage.source_path
             rocclr_path = self.stage.source_path + "/rocm-systems/rocclr"

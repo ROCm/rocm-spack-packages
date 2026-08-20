@@ -23,19 +23,13 @@ class RocmCore(ROCmLibrary, CMakePackage):
     libraries = ["librocm-core"]
     license("MIT")
 
-    def url_for_version(self, version):
-        if version <= Version("7.1.1"):
-            url = "https://github.com/ROCm/rocm-core/archive/rocm-{0}.tar.gz"
-        else:
-            url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
-        return url.format(version)
-
-    version("develop", branch="develop", commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7")
     rocm_url_map = [
         ("7.1.1", "https://github.com/ROCm/rocm-core/archive/rocm-{0}.tar.gz"),
         ("7.2.3", "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
+    version("develop", branch="develop", commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7")
+    version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
     version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
@@ -94,6 +88,7 @@ class RocmCore(ROCmLibrary, CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on("llvm-amdgpu", when=f"@{ver}+asan")
@@ -126,5 +121,5 @@ class RocmCore(ROCmLibrary, CMakePackage):
             env.set("LDFLAGS", "-fuse-ld=lld")
 
     def cmake_args(self):
-        args = [self.define("ROCM_VERSION", "7.3.0")]
+        args = [self.define("ROCM_VERSION", self.spec.version)]
         return args

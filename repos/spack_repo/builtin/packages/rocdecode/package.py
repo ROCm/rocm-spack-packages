@@ -12,8 +12,6 @@ class Rocdecode(ROCmLibrary, CMakePackage):
     """rocDecode is a high performance video decode SDK for AMD hardware"""
 
     homepage = "https://github.com/ROCm/rocDecode"
-    git = "https://github.com/ROCm/rocm-systems.git"
-    url = "https://github.com/ROCm/rocDecode/archive/refs/tags/rocm-6.4.3.tar.gz"
     git = "https://github.com/ROCm/rocDecode.git"
 
     tags = ["rocm"]
@@ -22,17 +20,18 @@ class Rocdecode(ROCmLibrary, CMakePackage):
     libraries = ["librocdecode"]
 
     license("MIT")
-    version(
-        "develop",
-        branch="develop",
-        commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7",
-    )
 
     rocm_url_map = [
         ("7.1.1", "https://github.com/ROCm/rocDecode/archive/refs/tags/rocm-{0}.tar.gz"),
         ("7.2.3", "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
+    version(
+        "develop",
+        branch="develop",
+        commit="3d34a77f61c1df5f24d3c18159b16e11d3e2dbb7",
+    )
+    version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="058ad6046a2c24e2610a87c4eefaebf62e4f94e5fcd10c42fd6d1863835fe593")
     version("7.2.1", sha256="59e162fcc472aefcf68cfe28b50316612572ca9f1256696537282f703310abaa")
@@ -92,6 +91,7 @@ class Rocdecode(ROCmLibrary, CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -109,6 +109,7 @@ class Rocdecode(ROCmLibrary, CMakePackage):
         "7.2.1",
         "7.2.3",
         "7.13.0",
+        "7.14.0",
         "develop",
     ]:
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
@@ -117,10 +118,7 @@ class Rocdecode(ROCmLibrary, CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@develop"):
-            return "projects/rocdecode"
-        return "."
-        if self.spec.satisfies("@7.13.0:"):
+        if self.spec.satisfies("@develop,7.13.0:"):
             return join_path(super().root_cmakelists_dir, "projects", "rocdecode")
         return super().root_cmakelists_dir
 
