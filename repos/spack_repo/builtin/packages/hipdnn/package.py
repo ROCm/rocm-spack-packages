@@ -63,7 +63,6 @@ class Hipdnn(ROCmLibrary, CMakePackage):
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
         depends_on(f"miopen-hip@{ver}", when=f"@{ver}")
-    depends_on("llvm@20", when="@develop")
 
     patch("0001-change-the-install-prefix-of-hipdnn-for-spack-builds.patch", when="@7.1")
 

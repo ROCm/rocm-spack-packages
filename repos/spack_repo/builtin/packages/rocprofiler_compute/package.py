@@ -94,6 +94,7 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -102,9 +103,9 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
     for ver in [
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on("rocprofiler-sdk", when=f"@{ver}")
-    depends_on("rocprofiler-sdk@develop", when="@develop")
 
     @property
     def root_cmakelists_dir(self):

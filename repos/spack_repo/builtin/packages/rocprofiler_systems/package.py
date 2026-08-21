@@ -325,8 +325,6 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
             "develop",
         ]:
             depends_on(f"amdsmi@{ver}", when=f"@{ver}")
-    depends_on("libiberty+pic", when="@develop +internal-tbb")
-    depends_on("intel-tbb@2019:2022.3", when="~internal-tbb @develop")
 
     # Fix GCC 13 build failure caused by a missing include of <array> in dyninst
     patch(

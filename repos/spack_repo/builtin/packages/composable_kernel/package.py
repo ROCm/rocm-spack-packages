@@ -84,9 +84,8 @@ class ComposableKernel(ROCmLibrary, CMakePackage):
     generator("ninja")
 
     for ver in [
-        "7.14.0",
-
         "develop",
+        "7.14.0",
         "7.13.0",
         "7.2.3",
         "7.2.1",
