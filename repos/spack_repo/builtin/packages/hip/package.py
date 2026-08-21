@@ -331,7 +331,7 @@ class Hip(ROCmLibrary, CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@develop,7.13:"):
+        if self.spec.satisfies("@7.13:"):
             return "projects/clr"
         elif self.spec.satisfies("@7.2:"):
             return "rocm-systems/projects/clr"
@@ -536,7 +536,7 @@ class Hip(ROCmLibrary, CMakePackage):
         self.spec.hipcc = join_path(self.prefix.bin, "hipcc")
 
     def patch(self):
-        if self.spec.satisfies("@develop,7.13:"):
+        if self.spec.satisfies("@7.13:"):
             clr_dir = "projects/clr"
         elif self.spec.satisfies("@7.2:"):
             clr_dir = "rocm-systems/projects/clr"
@@ -626,7 +626,7 @@ class Hip(ROCmLibrary, CMakePackage):
             args.append(self.define("HIPNV_DIR", hipnv_path))
 
         # HIP 7.13+ sources provide the CLR projects directly.
-        if self.spec.satisfies("@develop,7.13.0:"):
+        if self.spec.satisfies("@7.13.0:"):
             hip_common_dir = self.stage.source_path + "/projects/hip"
             rocclr_path = self.stage.source_path + "/projects/clr/rocclr"
             opencl_path = self.stage.source_path + "/projects/clr/opencl"

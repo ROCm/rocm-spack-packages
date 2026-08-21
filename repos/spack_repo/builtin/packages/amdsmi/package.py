@@ -75,8 +75,8 @@ class Amdsmi(CMakePackage):
     depends_on("libdrm@:2.4.124", when="@:7.2")
     depends_on("libdrm@2.4.131:", when="@7.13:")
     depends_on("py-pyyaml")
-    depends_on("libnl", when="@develop,7.14:")
-    depends_on("libmnl", when="@develop,7.14:")
+    depends_on("libnl", when="@7.14:")
+    depends_on("libmnl", when="@7.14:")
 
     depends_on("googletest@1.14:", type="build", when="@6.4:")
     depends_on("googletest@1.16:", type="build", when="@7.2:")

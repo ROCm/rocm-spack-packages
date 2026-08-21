@@ -118,7 +118,7 @@ class Rocdecode(ROCmLibrary, CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@develop,7.13.0:"):
+        if self.spec.satisfies("@7.13.0:"):
             return join_path(super().root_cmakelists_dir, "projects", "rocdecode")
         return super().root_cmakelists_dir
 

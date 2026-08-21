@@ -196,7 +196,7 @@ class Rccl(CMakePackage):
 
     @property
     def root_cmakelists_dir(self):
-        if self.spec.satisfies("@develop,7.13:"):
+        if self.spec.satisfies("@7.13:"):
             return join_path(super().root_cmakelists_dir, "projects", "rccl")
         else:
             return super().root_cmakelists_dir
