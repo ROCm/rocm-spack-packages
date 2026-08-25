@@ -25,7 +25,7 @@ class HipifyClang(ROCmLibrary, CMakePackage):
         ("7.2.3", "https://github.com/ROCm/HIPIFY/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/HIPIFY/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
-    version("develop", branch="amd-staging", commit="fd6bd537f9f8512d1e4bf4d80290864ba88b257c")
+    version("develop", branch="amd-staging", commit="0e051929fe80ccc0af6dc194ddb990aa82eec97d")
     version("7.14.0", sha256="3120249147bed499ddb6fbf8322698df574d7523f188fb02a032e2b940492af6")
     version("7.13.0", sha256="3fd97715dee4e21042472f8137dde8d1b5cd0573ff8eae1663ca407b843588b3")
     version("7.2.3", sha256="5d0adbdffa866f3ca3e94da8ac92304dc97272dcd9c3440b15943fc0bc7c8ad8")
