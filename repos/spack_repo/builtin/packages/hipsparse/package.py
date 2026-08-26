@@ -29,7 +29,7 @@ class Hipsparse(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         ("7.2.3", "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
-    version("develop", branch="develop", commit="cba70a7fb9a36a60f4723dfb46141ec2ecbe9ddc")
+    version("develop", branch="develop", commit="669ef4d1fca5e753ca69212abd9c6eebd037d34c")
     version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
