@@ -28,11 +28,15 @@ class Comgr(CMakePackage):
         elif version <= Version("7.2.3"):
             url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
             return url.format(version)
+        elif version > Version("100"):
+            url = ""
+            return url
         else:
             # For versions >= 7.13, use therock-{major}.{minor} tag format
             url = "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{0}.{1}.tar.gz"
             return url.format(version[0], version[1])
 
+    version("develop", branch="amd-staging", commit="a7525a1bd6f3bf2a8eb8a8ce35fd75ed1fd6a2ca")
     version("7.14.0", sha256="db365c1f0ab500eeee04a990d29d79a6bb667874f8069f7b69920ca62c352d2f")
     version("7.13.0", sha256="49f5e3d743b51aae87807cd44b00c2aa9fdeb7e78e2fa84f21d69b8be573e161")
     version("7.2.3", sha256="6239fa0c72b150cf0a325676264d3030a67389dec4fca7103f563a70c2b70114")
@@ -102,6 +106,7 @@ class Comgr(CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         # llvm libs are linked statically, so this *could* be a build dep
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")

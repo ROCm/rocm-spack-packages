@@ -29,6 +29,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
         ("7.2.3", "https://github.com/ROCm/rocm-libraries/archive/rocm-{0}.tar.gz"),
         (None, "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
+    version("develop", branch="develop", commit="985d83275dece0e55450349bf7187140707f0a4c")
     version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
@@ -123,6 +124,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
@@ -149,6 +151,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"hipblas-common@{ver}", when=f"@{ver}")
         depends_on(f"rocm-smi-lib@{ver}", when=f"@{ver}")
@@ -167,6 +170,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
 
@@ -308,6 +312,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
                 "shared/rocroller/CMakeLists.txt",
                 string=True,
             )
+        if self.spec.satisfies("@7.1:"):
             yaml_path = os.path.join(self.spec["py-pyyaml"].prefix, purelib)
             packaging_path = os.path.join(self.spec["py-packaging"].prefix, purelib)
             msgpack_path = os.path.join(self.spec["py-msgpack"].prefix, purelib)
@@ -319,6 +324,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
                 "projects/hipblaslt/cmake/hipblaslt_python.cmake",
                 string=True,
             )
+        if self.spec.satisfies("@7.1:7"):
             filter_file(
                 "${PROJECT_BINARY_DIR}/lib",
                 ":".join(["${PROJECT_BINARY_DIR}/lib", joblib_path]),

@@ -17,7 +17,7 @@ class Hip(ROCmLibrary, CMakePackage):
     single source code."""
 
     homepage = "https://github.com/ROCm/HIP"
-    git = "https://github.com/ROCm/HIP.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")
@@ -31,6 +31,7 @@ class Hip(ROCmLibrary, CMakePackage):
         (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
 
+    version("develop", branch="develop", commit="14f81ac444e2b298da2c81fccd614597d08f33ec")
     version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e6ab65cb2a236eee0e1f2738457367dffc3ce1e8dfb050ac22b7712e35aa896e")
@@ -132,6 +133,7 @@ class Hip(ROCmLibrary, CMakePackage):
             "7.2.3",
             "7.13.0",
             "7.14.0",
+            "develop",
         ]:
             depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
             depends_on(f"comgr@{ver}", when=f"@{ver}")
@@ -166,6 +168,7 @@ class Hip(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"hipcc@{ver}", when=f"@{ver}")
 
@@ -190,12 +193,14 @@ class Hip(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
 
     # roc-obj-ls requirements
     depends_on("perl-file-which")
     depends_on("perl-uri-encode")
+    depends_on("simde", when="@develop")
 
     # Add hip-clr sources thru the below
     for d_version, d_shasum in [

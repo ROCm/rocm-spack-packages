@@ -45,6 +45,13 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
     license("MIT")
 
     version(
+        "develop",
+        git="https://github.com/ROCm/rocm-systems.git",
+        branch="develop",
+        commit="14f81ac444e2b298da2c81fccd614597d08f33ec",
+        submodules=submodules,
+    )
+    version(
         "7.14.0",
         tag="therock-7.14",
         commit="2b22ab0195cc1461cd9abf3b969e9dd7c10af350",
@@ -283,6 +290,7 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
             "7.2.3",
             "7.13.0",
             "7.14.0",
+            "develop",
         ]:
             depends_on(f"hip@{ver}", when=f"@{ver}")
 
@@ -300,6 +308,7 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
             "7.2.3",
             "7.13.0",
             "7.14.0",
+            "develop",
         ]:
             depends_on(f"rocprofiler-sdk@{ver}", when=f"@{ver}")
 
@@ -313,6 +322,7 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
             "7.2.3",
             "7.13.0",
             "7.14.0",
+            "develop",
         ]:
             depends_on(f"amdsmi@{ver}", when=f"@{ver}")
 

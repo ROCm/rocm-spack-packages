@@ -17,7 +17,7 @@ class Rccl(CMakePackage):
     and reduce-scatter."""
 
     homepage = "https://github.com/ROCm/rccl"
-    git = "https://github.com/ROCm/rccl.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
@@ -27,11 +27,18 @@ class Rccl(CMakePackage):
         if version <= Version("7.2.3"):
             url = "https://github.com/ROCm/rccl/archive/rocm-{0}.tar.gz"
             return url.format(version)
+        elif version == Version("develop"):
+            url = ""
         else:
             # For versions >= 7.13, use therock-{major}.{minor} tag format
             url = "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{0}.{1}.tar.gz"
             return url.format(version[0], version[1])
 
+    version(
+        "develop",
+        branch="develop",
+        commit="14f81ac444e2b298da2c81fccd614597d08f33ec",
+    )
     version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="0cb83b3a0552d8b38b05c182753c68dd15432d99769da6aead889e30f14367d7")
@@ -159,6 +166,7 @@ class Rccl(CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -181,6 +189,7 @@ class Rccl(CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
         depends_on(f"rocprofiler-register@{ver}", when=f"@{ver}")
