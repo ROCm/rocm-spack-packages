@@ -122,4 +122,6 @@ class RocmCore(ROCmLibrary, CMakePackage):
 
     def cmake_args(self):
         args = [self.define("ROCM_VERSION", self.spec.version)]
+        if self.spec.satisfies("@develop"):
+            args.append(self.define("ROCM_VERSION", "10.0.0"))
         return args

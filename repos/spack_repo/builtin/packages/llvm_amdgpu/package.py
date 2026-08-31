@@ -47,6 +47,9 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         if version <= Version("7.2.3"):
             url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
             return url.format(version)
+        elif version > Version("100"):
+            url = ""
+            return url
         else:
             # For versions >= 7.13, use therock-{major}.{minor} tag format
             url = "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{0}.{1}.tar.gz"
@@ -196,7 +199,16 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         ("5.7.1", "703de8403c0bd0d80f37c970a698f10f148daf144d34f982e4484d04f7c7bbef"),
         ("5.7.0", "0f8780b9098573f1c456bdc84358de924dcf00604330770a383983e1775bf61e"),
     ]:
+
         resource(
+            name="rocm-device-libs",
+            placement="rocm-device-libs",
+            url=f"https://github.com/ROCm/ROCm-Device-Libs/archive/rocm-{d_version}.tar.gz",
+            sha256=d_shasum,
+            when=f"@{d_version} +rocm-device-libs",
+        )
+
+    resource(
         name="spirv-llvm-translator",
         placement="llvm/projects/spirv-llvm-translator",
         git="https://github.com/ROCm/SPIRV-LLVM-Translator/",
@@ -212,13 +224,6 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         commit="14f81ac444e2b298da2c81fccd614597d08f33ec",
         when="@develop",
     )
-    resource(
-            name="rocm-device-libs",
-            placement="rocm-device-libs",
-            url=f"https://github.com/ROCm/ROCm-Device-Libs/archive/rocm-{d_version}.tar.gz",
-            sha256=d_shasum,
-            when=f"@{d_version} +rocm-device-libs",
-        )
 
     for d_version, d_shasum in [
         ("7.1.1", "4c5b58afa1e11461954bd005a10ebf29941c120f1d6a7863954597f5eacfc605"),
@@ -293,6 +298,14 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             placement="spirv-llvm-translator",
             when=f"@{d_version}",
         )
+
+    resource(
+        name="spirv-headers",
+        git="https://github.com/KhronosGroup/SPIRV-Headers.git",
+        branch="main",
+        placement="spirv-headers",
+        when="@develop",
+    )
 
     for d_version, spirv_headers_commit in [
         ("7.1.0", "c9aad99f9276817f18f72a4696239237c83cb775"),

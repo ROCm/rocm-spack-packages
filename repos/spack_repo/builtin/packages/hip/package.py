@@ -17,7 +17,7 @@ class Hip(ROCmLibrary, CMakePackage):
     single source code."""
 
     homepage = "https://github.com/ROCm/HIP"
-    git = "https://github.com/ROCm/HIP.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
     tags = ["rocm"]
 
     maintainers("srekolam", "renjithravindrankannath", "haampie", "afzpatel")

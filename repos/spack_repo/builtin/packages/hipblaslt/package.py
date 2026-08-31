@@ -312,6 +312,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
                 "shared/rocroller/CMakeLists.txt",
                 string=True,
             )
+        if self.spec.satisfies("@7.1:"):
             yaml_path = os.path.join(self.spec["py-pyyaml"].prefix, purelib)
             packaging_path = os.path.join(self.spec["py-packaging"].prefix, purelib)
             msgpack_path = os.path.join(self.spec["py-msgpack"].prefix, purelib)
@@ -323,6 +324,7 @@ class Hipblaslt(ROCmLibrary, CMakePackage):
                 "projects/hipblaslt/cmake/hipblaslt_python.cmake",
                 string=True,
             )
+        if self.spec.satisfies("@7.1:7"):
             filter_file(
                 "${PROJECT_BINARY_DIR}/lib",
                 ":".join(["${PROJECT_BINARY_DIR}/lib", joblib_path]),

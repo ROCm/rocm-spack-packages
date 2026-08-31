@@ -87,6 +87,7 @@ class RocmCmake(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "develop",
     ]:
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")
 

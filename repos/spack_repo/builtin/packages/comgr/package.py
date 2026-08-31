@@ -28,6 +28,9 @@ class Comgr(CMakePackage):
         elif version <= Version("7.2.3"):
             url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
             return url.format(version)
+        elif version > Version("100"):
+            url = ""
+            return url
         else:
             # For versions >= 7.13, use therock-{major}.{minor} tag format
             url = "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{0}.{1}.tar.gz"

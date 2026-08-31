@@ -231,6 +231,7 @@ class ROCmLibrary(PackageBase):
 
         Can be overridden for packages with special requirements.
         """
+        return ""
         if self.rocm_url_map is None:
             raise NotImplementedError(
                 f"{self.__class__.__name__} must define rocm_url_map or override url_for_version"

@@ -27,6 +27,8 @@ class HsaAmdAqlprofile(CMakePackage):
         elif version <= Version("7.2.3"):
             url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
             return url.format(version)
+        elif version == Version("develop"):
+            url = ""
         else:
             # For versions >= 7.13, use therock-{major}.{minor} tag format
             url = "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{0}.{1}.tar.gz"

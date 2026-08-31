@@ -12,7 +12,7 @@ class Rocdecode(ROCmLibrary, CMakePackage):
     """rocDecode is a high performance video decode SDK for AMD hardware"""
 
     homepage = "https://github.com/ROCm/rocDecode"
-    git = "https://github.com/ROCm/rocDecode.git"
+    git = "https://github.com/ROCm/rocm-systems.git"
 
     tags = ["rocm"]
 
@@ -159,4 +159,7 @@ class Rocdecode(ROCmLibrary, CMakePackage):
                 self.define("LIBDRM_AMDGPU_INCLUDE_DIR", self.spec["libdrm"].prefix.include)
             )
             args.append(self.define("LIBDRM_AMDGPU_LIBRARY", self.spec["libdrm"].prefix.lib))
+        if self.spec.satisfies("@10:"):
+            args.append(self.define("LIBVA_LIBRARY", self.spec["libva"].prefix.lib))
+            args.append(self.define("LIBVA_DRM_LIBRARY", self.spec["libva"].prefix.lib))
         return args
