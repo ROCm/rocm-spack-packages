@@ -32,7 +32,7 @@ class ComposableKernel(ROCmLibrary, CMakePackage):
             url = "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{0}.{1}.tar.gz"
             return url.format(version[0], version[1])
 
-    version("develop", branch="develop", commit="985d83275dece0e55450349bf7187140707f0a4c")
+    version("develop", branch="develop", commit="2ebf4597309ed5c42ea43a8b6d2bb086757ccbb5")
     version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
