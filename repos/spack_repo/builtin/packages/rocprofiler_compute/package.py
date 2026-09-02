@@ -40,7 +40,7 @@ class RocprofilerCompute(ROCmLibrary, CMakePackage):
         commit="2b22ab0195cc1461cd9abf3b969e9dd7c10af350",
         submodules=submodules,
     )
-    version("develop", branch="develop", commit="14f81ac444e2b298da2c81fccd614597d08f33ec")
+    version("develop", branch="develop", commit="3ffe951afaa3b0692a7a42d9822cae68425e39ac")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
     version("7.2.1", sha256="201f19174eafbace2f7abf0d1178ebb17db878191276aba6d23f0e1758b0e10f")
