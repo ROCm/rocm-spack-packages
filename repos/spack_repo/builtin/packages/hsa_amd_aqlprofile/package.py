@@ -34,7 +34,7 @@ class HsaAmdAqlprofile(CMakePackage):
             url = "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{0}.{1}.tar.gz"
             return url.format(version[0], version[1])
 
-    version("develop", branch="develop", commit="14f81ac444e2b298da2c81fccd614597d08f33ec")
+    version("develop", branch="develop", commit="5bdcd3588fc3cfd14534a612d08f6d0f6dd3d7fc")
     version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")
     version("7.13.0", sha256="86162d975c59c2f43eb79187378a9b10615db5c1d73441e7e0b7621a7ef8962c")
     version("7.2.3", sha256="e90cfd8694af28a56433c8827a581ee12a4ba835f0d952436741d9e0f3f8685b")
