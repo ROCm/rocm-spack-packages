@@ -221,7 +221,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         placement="rocm-systems",
         git="https://github.com/ROCm/rocm-systems/",
         branch="develop",
-        commit="14f81ac444e2b298da2c81fccd614597d08f33ec",
+        commit="1091c91191a7c0b475f178354e9b650739726bf8",
         when="@develop",
     )
 
