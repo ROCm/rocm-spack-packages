@@ -50,7 +50,7 @@ class RocprofilerSdk(ROCmLibrary, CMakePackage):
     version(
         "develop",
         branch="develop",
-        commit="14f81ac444e2b298da2c81fccd614597d08f33ec",
+        commit="9f9214bd3c720c6cfc6d295e7f8e6ac3f338b332",
         submodules=submodules,
     )
     version(
