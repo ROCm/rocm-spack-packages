@@ -1,0 +1,138 @@
+# Spack environment to build all ROCm packages from develop branches.
+#
+# Usage:
+#   spack env activate .
+#   spack concretize
+#   spack install
+#
+# For GPU builds, add amdgpu_target to the environment, e.g.:
+#   spack config add 'packages:all:variants:amdgpu_target=gfx90a'
+# or add it to individual specs in the specs: section.
+#
+# Ensure the repo is added first if not using this file from repo root:
+#   spack repo add repos/spack_repo/builtin
+
+spack:
+  view: false
+
+  concretizer:
+    unify: true
+    reuse: true
+
+  packages:
+    # Require develop only for ROCm packages that define a develop version
+    all:
+      prefer:
+        - ~cuda
+        - +rocm
+        - amdgpu_target=gfx90a
+    opengl:
+      buildable: false
+    amdsmi:
+      require: "@develop"
+    comgr:
+      require: "@develop"
+    composable-kernel:
+      require: "@develop"
+    hip:
+      require: "@develop"
+    hipblas:
+      require: "@develop"
+    hipblas-common:
+      require: "@develop"
+    hipblaslt:
+      require: "@develop"
+    hipcub:
+      require: "@develop"
+    hipfft:
+      require: "@develop"
+    hipify-clang:
+      require: "@develop"
+    hiprand:
+      require: "@develop"
+    hipsolver:
+      require: "@develop"
+    hipsparse:
+      require: "@develop"
+    hipsparselt:
+      require: "@develop"
+    rocm-cmake:
+      require: "@develop"
+    rocm-core:
+      require: "@develop"
+    rocm-smi-lib:
+      require: "@develop"
+    rocblas:
+      require: "@develop"
+    rocfft:
+      require: "@develop"
+    rocminfo:
+      require: "@develop"
+    rocmlir:
+      require: "@develop"
+    rocprim:
+      require: "@develop"
+    rocprofiler-compute:
+      require: "@develop"
+    rocprofiler-dev:
+      require: "@develop"
+    rocprofiler-register:
+      require: "@develop"
+    rocprofiler-sdk:
+      require: "@develop"
+    rocprofiler-systems:
+      require: "@develop"
+    rocrand:
+      require: "@develop"
+    rocsolver:
+      require: "@develop"
+    rocsparse:
+      require: "@develop"
+    rocthrust:
+      require: "@develop"
+    roctracer-dev:
+      require: "@develop"
+    roctracer-dev-api:
+      require: "@develop"
+
+  specs:
+  - amdsmi
+  - comgr
+  - composable-kernel
+  - hip
+  - hipblas
+  - hipblas-common
+  - hipblaslt
+  - hipcub
+  - hipdnn
+  - hipfft
+  - hipify-clang
+  - hiprand
+  - hipsolver
+  - hipsparse
+  - hipsparselt
+  - hsa-rocr-dev
+  - hsa-amd-aqlprofile
+  - llvm-amdgpu
+  - miopen-hip
+  - rccl
+  - rocblas
+  - rocdecode
+  - rocm-cmake
+  - rocm-core
+  - rocm-smi-lib
+  - rocfft
+  - rocminfo
+  - rocmlir
+  - rocprim
+  - rocprofiler-compute
+  - rocprofiler-dev
+  - rocprofiler-register
+  - rocprofiler-sdk
+  - rocprofiler-systems
+  - rocrand
+  - rocsolver
+  - rocsparse
+  - rocthrust
+  - roctracer-dev
+  - roctracer-dev-api

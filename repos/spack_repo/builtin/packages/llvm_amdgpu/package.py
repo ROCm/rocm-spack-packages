@@ -47,11 +47,15 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         if version <= Version("7.2.3"):
             url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
             return url.format(version)
+        elif version > Version("100"):
+            url = ""
+            return url
         else:
             # For versions >= 7.13, use therock-{major}.{minor} tag format
             url = "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{0}.{1}.tar.gz"
             return url.format(version[0], version[1])
 
+    version("develop", branch="amd-staging", commit="4f43f4746ede4cc49ab4129f473dbd54e0d9db4f")
     version("7.14.0", sha256="db365c1f0ab500eeee04a990d29d79a6bb667874f8069f7b69920ca62c352d2f")
     version("7.13.0", sha256="49f5e3d743b51aae87807cd44b00c2aa9fdeb7e78e2fa84f21d69b8be573e161")
     version("7.2.3", sha256="6239fa0c72b150cf0a325676264d3030a67389dec4fca7103f563a70c2b70114")
@@ -195,6 +199,7 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
         ("5.7.1", "703de8403c0bd0d80f37c970a698f10f148daf144d34f982e4484d04f7c7bbef"),
         ("5.7.0", "0f8780b9098573f1c456bdc84358de924dcf00604330770a383983e1775bf61e"),
     ]:
+
         resource(
             name="rocm-device-libs",
             placement="rocm-device-libs",
@@ -202,6 +207,23 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             sha256=d_shasum,
             when=f"@{d_version} +rocm-device-libs",
         )
+
+    resource(
+        name="spirv-llvm-translator",
+        placement="llvm/projects/spirv-llvm-translator",
+        git="https://github.com/ROCm/SPIRV-LLVM-Translator/",
+        branch="main",
+        commit="2c14c7742af1216da468a6675d9518761cee5231",
+        when="@develop",
+    )
+    resource(
+        name="rocm-systems",
+        placement="rocm-systems",
+        git="https://github.com/ROCm/rocm-systems/",
+        branch="develop",
+        commit="0bf70ef688f186f99f9c2513aefe77b7a0ba8c46",
+        when="@develop",
+    )
 
     for d_version, d_shasum in [
         ("7.1.1", "4c5b58afa1e11461954bd005a10ebf29941c120f1d6a7863954597f5eacfc605"),
@@ -276,6 +298,14 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             placement="spirv-llvm-translator",
             when=f"@{d_version}",
         )
+
+    resource(
+        name="spirv-headers",
+        git="https://github.com/KhronosGroup/SPIRV-Headers.git",
+        branch="main",
+        placement="spirv-headers",
+        when="@develop",
+    )
 
     for d_version, spirv_headers_commit in [
         ("7.1.0", "c9aad99f9276817f18f72a4696239237c83cb775"),
