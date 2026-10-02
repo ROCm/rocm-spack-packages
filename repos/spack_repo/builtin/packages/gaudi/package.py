@@ -164,7 +164,7 @@ class Gaudi(CMakePackage, CudaPackage):
     depends_on("cmake", type="build")
     depends_on("cmake@3.19:", type="build", when="@39:40.0")
     depends_on("cmake@3.29:", type="build", when="@40.1:")
-    depends_on("cppgsl")
+    depends_on("ms-gsl")
     depends_on("fmt")
     depends_on("fmt@:8", when="@:36.9")
     depends_on("fmt@:10", when="@:38")
@@ -267,6 +267,9 @@ class Gaudi(CMakePackage, CudaPackage):
             env.prepend_path("GAUDI_PLUGIN_PATH", lib_path)
 
     def url_for_version(self, version):
+        if version.isdevelop():
+            return f"https://gitlab.cern.ch/gaudi/Gaudi/-/archive/{version}/Gaudi-{version}.tar.gz"
+
         major = str(version[0])
         minor = str(version[1])
         url = "https://gitlab.cern.ch/gaudi/Gaudi/-/archive/v{0}r{1}/Gaudi-v{0}r{1}.tar.gz".format(
