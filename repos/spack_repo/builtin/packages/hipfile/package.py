@@ -77,12 +77,14 @@ class Hipfile(ROCmLibrary, CMakePackage):
         ]
 
         if self.spec.satisfies("+rocm"):
-            args.extend([
-                self.define("HIP_PLATFORM", "amd"),
-                self.define("HIP_PATH", self.spec["hip"].prefix),
-                self.define("ROCM_PATH", self.spec["hip"].prefix),
-                self.define("ROCM_VERSION", str(self.spec.version)),
-            ])
+            args.extend(
+                [
+                    self.define("HIP_PLATFORM", "amd"),
+                    self.define("HIP_PATH", self.spec["hip"].prefix),
+                    self.define("ROCM_PATH", self.spec["hip"].prefix),
+                    self.define("ROCM_VERSION", str(self.spec.version)),
+                ]
+            )
 
         if self.spec.satisfies("^cmake@3.21.0:3.21.2"):
             args.append(self.define("__skip_rocmclang", "ON"))
