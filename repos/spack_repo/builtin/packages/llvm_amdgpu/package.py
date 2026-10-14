@@ -462,7 +462,6 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
             args.append(self.define("LLVM_ENABLE_LIBCXX", "ON"))
             args.append(self.define("LIBOMPTARGET_ENABLE_DEBUG", "ON"))
             args.append(self.define("LIBOMPTARGET_NO_SANITIZER_AMDGPU", "ON"))
-            # TheRock dropped these in therock-10.1 (pre_hook_amd-llvm.cmake).
             if self.spec.satisfies("@7.1:10.0"):
                 args.append(self.define("LIBOMPTARGET_EXTERNAL_PROJECT_HSA_PATH", hsa_path))
                 args.append(self.define("OFFLOAD_EXTERNAL_PROJECT_UNIFIED_ROCR", "ON"))
