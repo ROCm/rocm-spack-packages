@@ -61,7 +61,7 @@ class ProfilerHub(ROCmLibrary, CMakePackage):
     depends_on("benchmark@1.8.3:")
 
     for ver in ["10.0.0", "10.1.0"]:
-        depends_on("rocprof-trace-decoder@{ver}", when="@{ver}")
+        depends_on(f"rocprof-trace-decoder@{ver}", when=f"@{ver}")
 
     @property
     def root_cmakelists_dir(self):
