@@ -160,7 +160,17 @@ class Hipsparselt(ROCmLibrary, CMakePackage, ROCmPackage):
     for ver in ["7.0.0", "7.0.2"]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
 
-    for ver in ["7.1.0", "7.1.1", "7.2.0", "7.2.1", "7.2.3", "7.13.0", "7.14.0", "10.0.0", "10.1.0"]:
+    for ver in [
+        "7.1.0",
+        "7.1.1",
+        "7.2.0",
+        "7.2.1",
+        "7.2.3",
+        "7.13.0",
+        "7.14.0",
+        "10.0.0",
+        "10.1.0",
+    ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
         depends_on(f"hipblas-common@{ver}", when=f"@{ver}")
         depends_on(f"rocm-cmake@{ver}", when=f"@{ver}")
