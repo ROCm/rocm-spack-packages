@@ -167,6 +167,8 @@ class RocmExamples(CMakePackage):
     depends_on("hipblas+cuda", when="+cuda")
     depends_on("hipfft+cuda", when="@6.3: +cuda")
 
+    depends_on("libtiff", when="@10.1:")
+
     patch(
         "https://github.com/ROCm/rocm-examples/commit/669fc3e90ce95567464e80d7925f45cb525c81db.patch?full_index=1",
         sha256="ee0eec2140732513d077cca2a46a8257ed785315208dd3e917e4c8e424cfa63e",
@@ -233,4 +235,6 @@ class RocmExamples(CMakePackage):
         # Disable rocDecode examples in 7.13 due to upstream path issues
         if self.spec.satisfies("@7.13:"):
             args.append(self.define("ROCM_EXAMPLES_ENABLE_ROCDECODE", False))
+        if self.spec.satisfies("@10.1:"):
+            args.append(self.define("CMAKE_DISABLE_FIND_PACKAGE_Tiff", True))
         return args
