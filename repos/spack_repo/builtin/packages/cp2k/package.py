@@ -333,6 +333,8 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
     depends_on("blas")
     depends_on("lapack")
 
+    depends_on("libwignernj", when="@2027:")
+
     depends_on("libxs@1:+fortran", when="smm=libxs")
     depends_on("libxsmm@2:", when="+libxsmm")
 
@@ -490,6 +492,7 @@ class Cp2k(MakefilePackage, CMakePackage, CudaPackage, ROCmPackage):
         depends_on("sirius@7.4:", when="@2023.2")
         depends_on("sirius@7.5:", when="@2024.1:")
         depends_on("sirius@7.6:+pugixml", when="@2024.2:")
+        depends_on("sirius@:7.6", when="@:2025.1")
         depends_on("sirius@7.7:+pugixml", when="@2025.2:")
         depends_on("sirius+vdwxc", when="+vdwxc")
         depends_on("sirius+nlcglib", when="@2025.2:+nlcg")

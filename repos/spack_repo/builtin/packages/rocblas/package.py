@@ -28,6 +28,7 @@ class Rocblas(ROCmLibrary, CMakePackage):
         (None, "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
     version("develop", branch="develop", commit="8a29d2e82b93f5065c7fe5630248d3689f0c3f06")
+    version("10.0.0", sha256="eb7f255d6627d3cfb312a7bcf41d701517ecaeac88382b56f2bde8d4947ea592")
     version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
@@ -72,9 +73,9 @@ class Rocblas(ROCmLibrary, CMakePackage):
     conflicts("+asan", when="os=centos7")
     conflicts("+asan", when="os=centos8")
 
-    depends_on("c", type="build")  # generated
-    depends_on("cxx", type="build")  # generated
-    depends_on("fortran", type="build")  # generated
+    depends_on("c", type="build")
+    depends_on("cxx", type="build")
+    depends_on("fortran", type="build")
 
     depends_on("cmake@3.16.8:", type="build")
 
@@ -103,7 +104,7 @@ class Rocblas(ROCmLibrary, CMakePackage):
     ]:
         depends_on(f"rocm-smi-lib@{ver}", type="test", when=f"@{ver}")
 
-    for ver in ["7.13.0", "7.14.0", "develop"]:
+    for ver in ["7.13.0", "7.14.0", "10.0.0", "develop"]:
         depends_on(f"amdsmi@{ver}", type="test", when=f"@{ver}")
 
     for ver in [
@@ -160,6 +161,7 @@ class Rocblas(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "10.0.0",
         "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
@@ -185,13 +187,14 @@ class Rocblas(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "10.0.0",
         "develop",
     ]:
-        for tgt in itertools.chain(["auto"], amdgpu_targets):
-            depends_on(
-                f"hipblaslt@{ver} amdgpu_target={tgt}",
-                when=f"@{ver} +hipblaslt amdgpu_target={tgt}",
-            )
+        depends_on(f"hipblaslt@{ver}", when=f"@{ver} +hipblaslt")
+    for tgt in itertools.chain(["auto"], amdgpu_targets):
+        depends_on(
+            f"hipblaslt amdgpu_target={tgt}", when=f"@6.3.0: +hipblaslt amdgpu_target={tgt}"
+        )
 
     for ver in [
         "6.4.0",
@@ -207,11 +210,12 @@ class Rocblas(ROCmLibrary, CMakePackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "10.0.0",
         "develop",
     ]:
         depends_on(f"roctracer-dev@{ver}", when=f"@{ver}")
 
-    for ver in ["7.2.0", "7.2.1", "7.2.3", "7.13.0", "7.14.0", "develop"]:
+    for ver in ["7.2.0", "7.2.1", "7.2.3", "7.13.0", "7.14.0", "10.0.0", "develop"]:
         depends_on(f"rocm-tensile@{ver}", type="build", when=f"@{ver} +tensile")
 
     depends_on("python@3.6:", type="build")
@@ -300,7 +304,7 @@ class Rocblas(ROCmLibrary, CMakePackage):
                 int(match.group(1)), int(match.group(2)), int(match.group(3))
             )
         else:
-            ver = None
+            ver = super().determine_version(lib)
         return ver
 
     def cmake_args(self):

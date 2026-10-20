@@ -39,9 +39,19 @@ class Lammps(CMakePackage, CudaPackage, ROCmPackage, PythonExtension):
     version("20251210", sha256="175afc62a7314970d56e93b54745f4e6132e8f688155fff3dd70b298ec077c0e")
     version("20250910", sha256="475d5cda1b289ca3b3dcc97c1ee199f67fa6ad736951213e9b6ec08069d70f0c")
     version(
+        "20250722.6",
+        sha256="40780d0269c656ffa983a8e3e6ed047fedfe1d0b7344b77ace25bf8c7c535f01",
+        preferred=True,
+    )
+    version(
+        "20250722.5",
+        sha256="9d1eb62c47b8bb1c2003dfe5b5e82b3ebef4223b51593f9aec2410c5ec983977",
+        deprecated=True,
+    )
+    version(
         "20250722.4",
         sha256="411088d9c03339e025f6a975e0a5741bb9e3f351cc39eda220ab22ac318fe2fb",
-        preferred=True,
+        deprecated=True,
     )
     version(
         "20250722.3",
@@ -115,6 +125,8 @@ class Lammps(CMakePackage, CudaPackage, ROCmPackage, PythonExtension):
         depends_on("fortran", type="build", when=f"+{fc_pkg}")
 
     stable_versions = {
+        "20250722.6",
+        "20250722.5",
         "20250722.4",
         "20250722.3",
         "20250722.2",
@@ -358,14 +370,16 @@ class Lammps(CMakePackage, CudaPackage, ROCmPackage, PythonExtension):
         values=("kiss", "fftw3", "mkl", "mkl_gpu", "nvpl", "hipfft", "cufft"),
         multi=False,
     )
-    variant(
-        "gpu_precision",
-        default="mixed",
-        when="~kokkos",
-        description="Select GPU precision (used by GPU package)",
-        values=("double", "mixed", "single"),
-        multi=False,
-    )
+    for cond in ("cuda", "rocm", "opencl"):
+        variant("gpu", default=True, when=f"+{cond}", description="Activate the GPU package")
+        variant(
+            "gpu_precision",
+            default="mixed",
+            when=f"+gpu+{cond}",
+            description="Select GPU precision (used by GPU package)",
+            values=("double", "mixed", "single"),
+            multi=False,
+        )
     variant("tools", default=False, description="Build LAMMPS tools (msi2lmp, binary2txt, chain)")
 
     depends_on("cmake@3.16:", when="@20231121:", type="build")
@@ -618,15 +632,26 @@ class Lammps(CMakePackage, CudaPackage, ROCmPackage, PythonExtension):
             self.define_from_variant("BUILD_TOOLS", "tools"),
             self.define("ENABLE_TESTING", self.run_tests),
             self.define("DOWNLOAD_POTENTIALS", False),
+            self.define_from_variant("PKG_GPU", "gpu"),
         ]
-        if spec.satisfies("~kokkos"):
-            # LAMMPS can be build with the GPU package OR the KOKKOS package
-            # Using both in a single build is discouraged.
-            # +cuda only implies that one of the two is used
-            # by default it will use the GPU package if kokkos wasn't enabled
+
+        if spec.satisfies("+gpu"):
             if spec.satisfies("+cuda"):
-                args.append(self.define("PKG_GPU", True))
                 args.append(self.define("GPU_API", "cuda"))
+                # The GPU package (cmake/Modules/Packages/GPU.cmake) uses
+                # the classic find_package(CUDA) module (FindCUDA,
+                # deprecated), which reads CUDA_HOST_COMPILER -- a
+                # different variable from CMAKE_CUDA_HOST_COMPILER, the one
+                # set by the modern enable_language(CUDA) path used for the
+                # rest of the build. Because nothing in this recipe sets
+                # CUDA_HOST_COMPILER, FindCUDA falls back to its own
+                # detection instead of the compiler Spack actually selected
+                # for the spec, and any attempt to steer the CUDA host
+                # compiler via CMAKE_CUDA_HOST_COMPILER (e.g. to work
+                # around a CUDA/GCC version incompatibility) silently has
+                # no effect. Set it explicitly so the legacy module stays
+                # consistent with the rest of the build.
+                args.append(self.define("CUDA_HOST_COMPILER", self.compiler.cxx))
                 args.append(self.define_from_variant("GPU_PREC", "gpu_precision"))
                 cuda_arch = spec.variants["cuda_arch"].value
                 if cuda_arch != "none":
@@ -635,17 +660,21 @@ class Lammps(CMakePackage, CudaPackage, ROCmPackage, PythonExtension):
             elif spec.satisfies("+opencl"):
                 # LAMMPS downloads and bundles its own OpenCL ICD Loader by default
                 args.append(self.define("USE_STATIC_OPENCL_LOADER", False))
-                args.append(self.define("PKG_GPU", True))
                 args.append(self.define("GPU_API", "opencl"))
                 args.append(self.define_from_variant("GPU_PREC", "gpu_precision"))
             elif spec.satisfies("+rocm"):
-                args.append(self.define("PKG_GPU", True))
                 args.append(self.define("GPU_API", "hip"))
                 args.append(self.define_from_variant("GPU_PREC", "gpu_precision"))
-                args.append(self.define_from_variant("HIP_ARCH", "amdgpu_target"))
-            else:
-                args.append(self.define("PKG_GPU", False))
-        else:
+                if spec.satisfies("@:20260330"):
+                    args.append(self.define_from_variant("HIP_ARCH", "amdgpu_target"))
+                else:
+                    # HIP_ARCH deprecated, use GPU_ARCH instead
+                    args.append(self.define_from_variant("GPU_ARCH", "amdgpu_target"))
+                # HIP auto-detection can fail on machines without an attached GPU.
+                args.append(self.define_from_variant("GPU_TARGETS", "amdgpu_target"))
+                args.append(self.define("HIP_USE_DEVICE_SORT", False))
+
+        if spec.satisfies("+kokkos"):
             args.append(self.define("EXTERNAL_KOKKOS", True))
             if spec.satisfies("@20240207: +kokkos+kspace"):
                 args.append(self.define_from_variant("FFT_KOKKOS", "fft_kokkos"))
@@ -745,6 +774,8 @@ class Lammps(CMakePackage, CudaPackage, ROCmPackage, PythonExtension):
                     args.append(self.define("HIP_PATH", f"{spec['hip'].prefix}/hip"))
                 elif spec.satisfies("^hip@5.5:"):
                     args.append(self.define("HIP_PATH", spec["hip"].prefix))
+            else:
+                args.append(self.define("HIP_PATH", spec["hip"].prefix))
 
         return args
 

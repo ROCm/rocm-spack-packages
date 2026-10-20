@@ -33,6 +33,7 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         (None, "https://github.com/ROCm/rocm-libraries/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
     version("develop", branch="develop", commit="8a29d2e82b93f5065c7fe5630248d3689f0c3f06")
+    version("10.0.0", sha256="eb7f255d6627d3cfb312a7bcf41d701517ecaeac88382b56f2bde8d4947ea592")
     version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
@@ -116,13 +117,13 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "10.0.0",
         "develop",
     ]:
         depends_on(f"rocm-cmake@{ver}:", type="build", when=f"@{ver}")
-        for tgt in itertools.chain(["auto"], amdgpu_targets):
-            depends_on(
-                f"rocfft@{ver} amdgpu_target={tgt}", when=f"@{ver} +rocm amdgpu_target={tgt}"
-            )
+        depends_on(f"rocfft@{ver}", when=f"@{ver} +rocm")
+    for tgt in itertools.chain(["auto"], amdgpu_targets):
+        depends_on(f"rocfft amdgpu_target={tgt}", when=f"+rocm amdgpu_target={tgt}")
 
     # https://github.com/ROCm/rocFFT/pull/85)
     patch("001-remove-submodule-and-sync-shared-files-from-rocFFT.patch", when="@6.0.0")
@@ -142,7 +143,7 @@ class Hipfft(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
                 int(match.group(1)), int(match.group(2)), int(match.group(3))
             )
         else:
-            ver = None
+            ver = super().determine_version(lib)
         return ver
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:

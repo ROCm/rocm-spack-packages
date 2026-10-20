@@ -31,6 +31,7 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
     ]
 
     version("develop", branch="develop", commit="8a29d2e82b93f5065c7fe5630248d3689f0c3f06")
+    version("10.0.0", sha256="eb7f255d6627d3cfb312a7bcf41d701517ecaeac88382b56f2bde8d4947ea592")
     version("7.14.0", sha256="7bd30a64e1ac823861db07d9fe115256a16f02c527de49a6ecbdbbcb4018c0d8")
     version("7.13.0", sha256="ae19ac6c8a86d0e1685d937409390506fa0f80f3cb82ea3e3b76071898c25771")
     version("7.2.3", sha256="300cc50720d40bad7c7ed1f6d67e8c5ebecaba62c07a6ea1cc5813c0ea2e41b5")
@@ -78,8 +79,8 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
     conflicts("~cuda ~rocm", msg="CUDA or ROCm support is required")
 
     depends_on("c", type="build")  # generated
-    depends_on("cxx", type="build")  # generated
-    depends_on("fortran", type="build")  # generated
+    depends_on("cxx", type="build")
+    depends_on("fortran", type="build")
 
     depends_on("cmake@3.5:", type="build")
 
@@ -125,6 +126,7 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "10.0.0",
         "develop",
     ]:
         depends_on(f"rocm-cmake@{ver}", when=f"+rocm @{ver}")
@@ -177,6 +179,7 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
         "7.2.3",
         "7.13.0",
         "7.14.0",
+        "10.0.0",
         "develop",
     ]:
         depends_on(f"hipblas-common@{ver}", when=f"@{ver}")
@@ -196,7 +199,7 @@ class Hipblas(ROCmLibrary, CMakePackage, CudaPackage, ROCmPackage):
                 int(match.group(1)), int(match.group(2)), int(match.group(3))
             )
         else:
-            ver = None
+            ver = super().determine_version(lib)
         return ver
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:

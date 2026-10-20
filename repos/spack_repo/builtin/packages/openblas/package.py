@@ -164,6 +164,14 @@ class Openblas(CMakePackage, MakefilePackage):
     depends_on("fortran", when="@:0.3.20", type="build")
     depends_on("perl", when="@:0.3.20", type="build")
 
+    # https://github.com/OpenMathLib/OpenBLAS/issues/5947
+    # https://github.com/OpenMathLib/OpenBLAS/pull/5949
+    patch(
+        "https://github.com/OpenMathLib/OpenBLAS/commit/842189bf3f4fe62624bdb6d0186699dd4689f891.diff?full_index=1",
+        when="@0.3.34",
+        sha256="e1923356044ba7d0f41662735a841352cc655a993538b243ae0a03afd4210820",
+    )
+
     # https://github.com/OpenMathLib/OpenBLAS/pull/5796
     patch(
         "https://github.com/OpenMathLib/OpenBLAS/commit/88705a932831c0de1ed136b461c6c239802828b2.diff?full_index=1",
@@ -316,6 +324,24 @@ class Openblas(CMakePackage, MakefilePackage):
         "https://github.com/OpenMathLib/OpenBLAS/commit/cdebb4fd4b2bbbf856e5abdcedbe9a5cf348ef8e.patch?full_index=1",
         sha256="0df81a8f5c1460d3db461e2309e5ac0b70c7745a97a10e617f109b4a5811e043",
         when="@0.3.30 +dynamic_dispatch target=aarch64:",
+    )
+
+    # Fix a stack overflow in the Haswell and Zen fallback GEMM kernels of DYNAMIC_ARCH builds
+    # on AVX-512 Zen 4/5 hosts (https://github.com/OpenMathLib/OpenBLAS/issues/6013, 6021)
+    patch(
+        "https://github.com/OpenMathLib/OpenBLAS/commit/a59a5c7605ac7ed225e7a43acb9fa4c24e91a22a.patch?full_index=1",
+        sha256="cea51fd1a445259e05a52f0dbfb1cdc3969290879af161dd2b8242bd81840eee",
+        when="@0.3.34 target=x86_64:",
+    )
+    patch(
+        "https://github.com/OpenMathLib/OpenBLAS/commit/a78196c5d7e0778b9dab394161b0e0a282836f4f.patch?full_index=1",
+        sha256="b047da5b27e9cef83551774d734b1d040eaae41bd0e6135ce2064ea9d7f94926",
+        when="@0.3.34 target=x86_64:",
+    )
+    patch(
+        "https://github.com/OpenMathLib/OpenBLAS/commit/0302a537b86eb1fff00ade38a1b14f62c28d68c2.patch?full_index=1",
+        sha256="7cf59b4a32af2f7934a7c63dbb4f600e8c7f2bdb4a3c1500dc0f24a89bb41367",
+        when="@0.3.34 target=x86_64:",
     )
 
     # ilp64 and symbol suffixes are not supported with CMake build system
