@@ -7,12 +7,13 @@ import shutil
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage, generator
 from spack_repo.builtin.build_systems.compiler import CompilerPackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary
 from spack_repo.builtin.packages.llvm.package import LlvmDetection
 
 from spack.package import *
 
 
-class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
+class LlvmAmdgpu(ROCmLibrary, CMakePackage, LlvmDetection, CompilerPackage):
     """Toolkit for the construction of highly optimized compilers,
     optimizers, and run-time environments."""
 
@@ -43,14 +44,10 @@ class LlvmAmdgpu(CMakePackage, LlvmDetection, CompilerPackage):
 
     license("Apache-2.0")
 
-    def url_for_version(self, version):
-        if version <= Version("7.2.3"):
-            url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
-            return url.format(version)
-        else:
-            # For versions >= 7.13, use therock-{major}.{minor} tag format
-            url = "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{0}.{1}.tar.gz"
-            return url.format(version[0], version[1])
+    rocm_url_map = [
+        ("7.2.3", "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
 
     version("10.1.0", sha256="db317aadb90366b61af0fd93b0ccf3cefe70a18e4e37c23744d968ea6f900654")
     version("10.0.0", sha256="92dcfe3d2e1ca52b460c7f168d8d74e47cd17370fa8bdffb919174115f94ab0f")
