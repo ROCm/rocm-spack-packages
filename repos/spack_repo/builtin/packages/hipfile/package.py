@@ -9,7 +9,11 @@ from spack.package import *
 
 
 class Hipfile(ROCmLibrary, CMakePackage):
-    """HIP file I/O library for ROCm ecosystem."""
+    """hipFile is AMD’s Infinity Storage library that provides direct-to-GPU
+    I/O without requiring a host-side buffer. The library provides C and Python
+    APIs for synchronous, asynchronous, and batch I/O operations. hipFile
+    automatically falls back to POSIX I/O when operations are unable to use
+    the direct-to-GPU path."""
 
     homepage = "https://github.com/ROCm/rocm-systems"
     git = "https://github.com/ROCm/rocm-systems.git"
