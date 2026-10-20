@@ -253,9 +253,8 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
         when="@10.0",
     )
 
-    depends_on("c", type="build")  # generated
-    depends_on("cxx", type="build")  # generated
-    depends_on("fortran", type="build")  # generated
+    depends_on("c", type="build")
+    depends_on("cxx", type="build")
 
     # hard dependencies
     depends_on("cmake@3.16:", type="build")
