@@ -69,13 +69,7 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
         when="platform=darwin",
     )
     variant("nccl", default=True, description="Use NCCL", when="+cuda platform=linux")
-    variant("nccl", default=True, description="Use NCCL", when="@:2.10 +rocm platform=linux")
-    variant(
-        "nccl",
-        default=False,
-        description="Disable NCCL from 2.11 on rocm",
-        when="@2.11: +rocm platform=linux",
-    )
+    variant("nccl", default=True, description="Use NCCL", when="+rocm platform=linux")
     # Requires AVX2: https://discuss.pytorch.org/t/107518
     variant("nnpack", default=True, description="Use NNPACK", when="target=x86_64_v3:")
     variant("numa", default=True, description="Use NUMA", when="platform=linux")
@@ -104,7 +98,6 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
 
     conflicts("+cuda+rocm")
     conflicts("+gloo+rocm")
-    conflicts("+rocm", when="@2.12:", msg="Rocm doesn't support py-torch 2.12+ releases")
     conflicts("+tensorpipe", when="+rocm ^hip@:5.1", msg="TensorPipe not supported until ROCm 5.2")
 
     # https://github.com/pytorch/pytorch/issues/77811
@@ -237,7 +230,7 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
         depends_on("hiprand")
         depends_on("hipsolver")
         depends_on("rocm-core")
-        depends_on("amdsmi", when="@2.12")
+        depends_on("amdsmi", when="@2.12:")
         depends_on("rocfft")
         depends_on("rocblas")
         depends_on("miopen-hip")
@@ -247,8 +240,12 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
         depends_on("hipblaslt@7.0:")
         depends_on("rocminfo")
         depends_on("hipsparselt@7.0:")
-        depends_on("aotriton@0.11b", when="@2.11:")
+        depends_on("rocshmem@7.14:", when="@2.13:")
+        depends_on("hipblas-common@7.14:", when="@2.13:")
+        depends_on("hipfile@7.14:", when="@2.14:")
         depends_on("aotriton@0.10b", when="@:2.10")
+        depends_on("aotriton@0.11b", when="@2.11:2.12")
+        depends_on("aotriton@0.12b:", when="@2.13:")
 
     depends_on("mpi", when="+mpi")
     depends_on("ucc", when="+ucc")
@@ -420,6 +417,9 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
             env.set("TORCHINDUCTOR_CK_DIR", self.spec["composable-kernel"].prefix)
             env.set("AOTRITON_INSTALLED_PREFIX", self.spec["aotriton"].prefix)
             env.prepend_path("CPATH", self.spec["aotriton"].prefix.include)
+            if self.spec.satisfies("@2.13:"):
+                env.prepend_path("CPATH", self.spec["hipblas-common"].prefix.include)
+                env.prepend_path("CPATH", self.spec["hipblaslt"].prefix.include)
             if self.spec.satisfies("^hip@5.2.0:"):
                 env.set("CMAKE_MODULE_PATH", self.spec["hip"].prefix.lib.cmake.hip)
 
