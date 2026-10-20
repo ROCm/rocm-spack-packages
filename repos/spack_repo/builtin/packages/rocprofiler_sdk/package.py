@@ -48,6 +48,12 @@ class RocprofilerSdk(ROCmLibrary, CMakePackage):
     license("MIT")
 
     version(
+        "develop",
+        branch="develop",
+        commit="2a8fffb7d64c59f83fe0d2efa22ed31d87d8adbf",
+        submodules=submodules,
+    )
+    version(
         "10.0.0",
         tag="therock-10.0",
         commit="6b0e43f341195e203754e08f850e437ff2fc09f9",
@@ -212,6 +218,7 @@ class RocprofilerSdk(ROCmLibrary, CMakePackage):
         "7.13.0",
         "7.14.0",
         "10.0.0",
+        "develop",
     ]:
         depends_on(f"hsa-amd-aqlprofile@{ver}", when=f"@{ver}")
 
@@ -235,6 +242,7 @@ class RocprofilerSdk(ROCmLibrary, CMakePackage):
         "7.13.0",
         "7.14.0",
         "10.0.0",
+        "develop",
     ]:
         depends_on(f"hip@{ver}", when=f"@{ver}")
         depends_on(f"rocm-cmake@{ver}", when=f"@{ver}")
@@ -258,6 +266,7 @@ class RocprofilerSdk(ROCmLibrary, CMakePackage):
         "7.13.0",
         "7.14.0",
         "10.0.0",
+        "develop",
     ]:
         depends_on(f"rocdecode@{ver}", when=f"@{ver}")
     for tgt in itertools.chain(["auto"], amdgpu_targets):
