@@ -5,11 +5,12 @@
 import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary
 
 from spack.package import *
 
 
-class HsaAmdAqlprofile(CMakePackage):
+class HsaAmdAqlprofile(ROCmLibrary, CMakePackage):
     """Architected Queuing Language Profiling Library
     AQLprofile is an open source library that enables advanced
     GPU profiling and tracing on AMD platforms"""
@@ -20,19 +21,11 @@ class HsaAmdAqlprofile(CMakePackage):
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
     libraries = ["libhsa-amd-aqlprofile64"]
 
-    def url_for_version(self, version):
-        if version <= Version("7.1.1"):
-            url = "https://github.com/ROCm/aqlprofile/archive/rocm-{0}.tar.gz"
-            return url.format(version)
-        elif version <= Version("7.2.3"):
-            url = "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"
-            return url.format(version)
-        elif version == Version("develop"):
-            url = ""
-        else:
-            # For versions >= 7.13, use therock-{major}.{minor} tag format
-            url = "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{0}.{1}.tar.gz"
-            return url.format(version[0], version[1])
+    rocm_url_map = [
+        ("7.1.1", "https://github.com/ROCm/aqlprofile/archive/rocm-{0}.tar.gz"),
+        ("7.2.3", "https://github.com/ROCm/rocm-systems/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
 
     version("develop", branch="develop", commit="2a8fffb7d64c59f83fe0d2efa22ed31d87d8adbf")
     version("7.14.0", sha256="8cadf0d5c0f53f334b7b940a78619d1746c913b26ae719e2a09e20a6f7128330")

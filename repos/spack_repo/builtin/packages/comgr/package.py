@@ -5,11 +5,12 @@
 import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary
 
 from spack.package import *
 
 
-class Comgr(CMakePackage):
+class Comgr(ROCmLibrary, CMakePackage):
     """This provides various Lightning Compiler related services. It currently
     contains one library, the Code Object Manager (Comgr)"""
 
@@ -21,20 +22,11 @@ class Comgr(CMakePackage):
     libraries = ["libamd_comgr"]
     license("NCSA")
 
-    def url_for_version(self, version):
-        if version <= Version("6.0.2"):
-            url = "https://github.com/ROCm/ROCm-CompilerSupport/archive/rocm-{0}.tar.gz"
-            return url.format(version)
-        elif version <= Version("7.2.3"):
-            url = "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"
-            return url.format(version)
-        elif version > Version("100"):
-            url = ""
-            return url
-        else:
-            # For versions >= 7.13, use therock-{major}.{minor} tag format
-            url = "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{0}.{1}.tar.gz"
-            return url.format(version[0], version[1])
+    rocm_url_map = [
+        ("6.0.2", "https://github.com/ROCm/ROCm-CompilerSupport/archive/rocm-{0}.tar.gz"),
+        ("7.2.3", "https://github.com/ROCm/llvm-project/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
 
     version("develop", branch="amd-staging", commit="bdc35841c97ff51400273b91d7bc05c96e19c2d9")
     version("7.14.0", sha256="db365c1f0ab500eeee04a990d29d79a6bb667874f8069f7b69920ca62c352d2f")

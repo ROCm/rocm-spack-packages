@@ -229,9 +229,12 @@ class ROCmLibrary(PackageBase):
     def url_for_version(self, version):
         """Generate URL based on rocm_url_map configuration.
 
+        Git/develop versions are fetched from the repository, not a tarball.
         Can be overridden for packages with special requirements.
         """
-        return ""
+        if version.isdevelop():
+            return ""
+
         if self.rocm_url_map is None:
             raise NotImplementedError(
                 f"{self.__class__.__name__} must define rocm_url_map or override url_for_version"

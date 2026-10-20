@@ -5,12 +5,12 @@
 import re
 
 from spack_repo.builtin.build_systems.cmake import CMakePackage
-from spack_repo.builtin.build_systems.rocm import ROCmPackage
+from spack_repo.builtin.build_systems.rocm import ROCmLibrary, ROCmPackage
 
 from spack.package import *
 
 
-class Rccl(CMakePackage):
+class Rccl(ROCmLibrary, CMakePackage):
     """RCCL (pronounced "Rickle") is a stand-alone library
     of standard collective communication routines for GPUs,
     implementing all-reduce, all-gather, reduce, broadcast,
@@ -23,16 +23,10 @@ class Rccl(CMakePackage):
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
     libraries = ["librccl"]
 
-    def url_for_version(self, version):
-        if version <= Version("7.2.3"):
-            url = "https://github.com/ROCm/rccl/archive/rocm-{0}.tar.gz"
-            return url.format(version)
-        elif version == Version("develop"):
-            url = ""
-        else:
-            # For versions >= 7.13, use therock-{major}.{minor} tag format
-            url = "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{0}.{1}.tar.gz"
-            return url.format(version[0], version[1])
+    rocm_url_map = [
+        ("7.2.3", "https://github.com/ROCm/rccl/archive/rocm-{0}.tar.gz"),
+        (None, "https://github.com/ROCm/rocm-systems/archive/refs/tags/therock-{1}.{2}.tar.gz"),
+    ]
 
     version(
         "develop",
