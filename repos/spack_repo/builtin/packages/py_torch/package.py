@@ -101,7 +101,7 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
 
     conflicts("+cuda+rocm")
     conflicts("+gloo+rocm")
-    conflicts("+tensorpipe", when="+rocm ^hip@:5.1", msg="TensorPipe not supported until ROCm 5.2")
+    conflicts("@2.14.0+nccl",when="+rocm", msg="ROCm 2.14.0 doesn't support NCCL")
 
     # https://github.com/pytorch/pytorch/issues/77811
     conflicts("+qnnpack", when="platform=darwin target=aarch64:")
@@ -423,8 +423,7 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
             if self.spec.satisfies("@2.13:"):
                 env.prepend_path("CPATH", self.spec["hipblas-common"].prefix.include)
                 env.prepend_path("CPATH", self.spec["hipblaslt"].prefix.include)
-            if self.spec.satisfies("^hip@5.2.0:"):
-                env.set("CMAKE_MODULE_PATH", self.spec["hip"].prefix.lib.cmake.hip)
+            env.set("CMAKE_MODULE_PATH", self.spec["hip"].prefix.lib.cmake.hip)
 
         enable_or_disable("cudnn")
         if "+cudnn" in self.spec:
