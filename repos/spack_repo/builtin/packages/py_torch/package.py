@@ -52,9 +52,6 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
     variant("fbgemm", default=True, description="Use FBGEMM (quantized 8-bit server operators)")
     variant("kineto", default=True, description="Use Kineto profiling library", when="@:2.10")
     variant(
-        "kineto", default=True, description="Use Kineto profiling library", when="@2.11: ~rocm"
-    )
-    variant(
         "kineto",
         default=False,
         description="Disable Kineto from 2.11 on ROCm",
@@ -70,6 +67,12 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
     )
     variant("nccl", default=True, description="Use NCCL", when="+cuda platform=linux")
     variant("nccl", default=True, description="Use NCCL", when="+rocm platform=linux")
+    variant(
+        "nccl",
+        default=False,
+        description="Disable NCCL for 2.14.0 on rocm",
+        when="@2.14.0 +rocm platform=linux",
+    )
     # Requires AVX2: https://discuss.pytorch.org/t/107518
     variant("nnpack", default=True, description="Use NNPACK", when="target=x86_64_v3:")
     variant("numa", default=True, description="Use NUMA", when="platform=linux")
