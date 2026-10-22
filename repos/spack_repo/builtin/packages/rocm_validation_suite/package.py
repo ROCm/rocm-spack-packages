@@ -122,8 +122,11 @@ class RocmValidationSuite(ROCmLibrary, CMakePackage):
     patch("013-add-hiprand-includes-7.13.patch", when="@7.13:10.0")
     patch("013-add-hiprand-includes-10.1.patch", when="@10.1:")
     patch("014-skip-external-downloads-10.0.patch", when="@10.0")
-    patch("014-skip-external-downloads-10.1.patch", when="@10.1:")
-    patch("015-skip-pciutils-download.patch", when="@10.1:")
+    patch(
+        "https://github.com/ROCm/ROCmValidationSuite/commit/fcbc022fdc9785e42325557fac3f5ab995a36c12.patch?full_index=1",
+        sha256="bda8587f1fe0effc24e918bd2a21287020974a935b8caac7e08e22af39269ada",
+        when="@10.1:",
+    )
     depends_on("cmake@3.5:", type="build")
     depends_on("zlib-api", type="link")
     depends_on("yaml-cpp~shared")
