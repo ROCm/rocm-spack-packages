@@ -28,7 +28,7 @@ class Comgr(ROCmLibrary, CMakePackage):
         (None, "https://github.com/ROCm/llvm-project/archive/refs/tags/therock-{1}.{2}.tar.gz"),
     ]
 
-    version("develop", branch="amd-staging", commit="bdc35841c97ff51400273b91d7bc05c96e19c2d9")
+    version("develop", branch="amd-staging", commit="2792f8ceeb5aa6e188c1ce2b735923b2406a8e59")
     version("10.0.0", sha256="92dcfe3d2e1ca52b460c7f168d8d74e47cd17370fa8bdffb919174115f94ab0f")
     version("7.14.0", sha256="db365c1f0ab500eeee04a990d29d79a6bb667874f8069f7b69920ca62c352d2f")
     version("7.13.0", sha256="49f5e3d743b51aae87807cd44b00c2aa9fdeb7e78e2fa84f21d69b8be573e161")
