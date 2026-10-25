@@ -67,12 +67,6 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
     )
     variant("nccl", default=True, description="Use NCCL", when="+cuda platform=linux")
     variant("nccl", default=True, description="Use NCCL", when="+rocm platform=linux")
-    variant(
-        "nccl",
-        default=False,
-        description="Disable NCCL for 2.14.0 on rocm",
-        when="@2.14.0 +rocm platform=linux",
-    )
     # Requires AVX2: https://discuss.pytorch.org/t/107518
     variant("nnpack", default=True, description="Use NNPACK", when="target=x86_64_v3:")
     variant("numa", default=True, description="Use NUMA", when="platform=linux")
@@ -101,7 +95,7 @@ class PyTorch(PythonPackage, CudaPackage, ROCmPackage):
 
     conflicts("+cuda+rocm")
     conflicts("+gloo+rocm")
-    conflicts("@2.14.0+nccl",when="+rocm", msg="ROCm 2.14.0 doesn't support NCCL")
+    conflicts("@2.12,2.14.0+nccl", when="+rocm", msg="ROCm 2.12 & 2.14.0 doesn't support NCCL")
 
     # https://github.com/pytorch/pytorch/issues/77811
     conflicts("+qnnpack", when="platform=darwin target=aarch64:")
