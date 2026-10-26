@@ -317,7 +317,7 @@ class RocprofilerSdk(ROCmLibrary, CMakePackage):
             args.append(self.define("ROCPROFILER_BUILD_GLOG", "OFF"))
             args.append(self.define("ROCPROFILER_BUILD_GOTCHA", "OFF"))
             args.append(self.define("ROCPROFILER_BUILD_SQLITE3", "OFF"))
-        if self.spec.satisfies("@7.14:"):
+        if self.spec.satisfies("@7.13:"):
             args.append(self.define("ROCPROFILER_BUILD_ABSEIL", "ON"))
         if self.spec.satisfies("@10.0:"):
             args.append(self.define("ROCPROFILER_BUILD_YAML_CPP", "OFF"))

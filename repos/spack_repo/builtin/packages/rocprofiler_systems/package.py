@@ -292,8 +292,7 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
     depends_on("spdlog", when="@10:")
     depends_on("nlohmann-json", when="@10:")
     depends_on("libiberty", when="@10:")
-    # timemory Packages.cmake air-gap: BUILD_*=OFF uses find_package(...)
-    depends_on("yaml-cpp@:0.8.0", when="@10.0")
+    depends_on("yaml-cpp@:0.8.0", when="@10:")
 
     with when("+rocm"):
         for ver in ["6.3.0", "6.3.1", "6.3.2", "6.3.3"]:
@@ -450,7 +449,7 @@ class RocprofilerSystems(ROCmLibrary, CMakePackage):
             args.append(self.define_from_variant("DYNINST_BUILD_TBB", "internal-tbb"))
         if spec.satisfies("@7.2:"):
             args.append(self.define("libunwind_ROOT", self.spec["libunwind"].prefix))
-        if spec.satisfies("@10.0"):
+        if spec.satisfies("@10.0:"):
             args.append(self.define("ROCPROFSYS_BUILD_SQLITE3", False))
             args.append(self.define("ROCPROFSYS_BUILD_SPDLOG", False))
             args.append(self.define("ROCPROFSYS_BUILD_NLOHMANN_JSON", False))
