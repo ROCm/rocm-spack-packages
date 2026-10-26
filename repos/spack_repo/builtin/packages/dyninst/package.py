@@ -53,7 +53,7 @@ class Dyninst(CMakePackage):
     depends_on("boost@1.70.0:", when="@12:12.3.0")
     depends_on("boost@1.71.0:", when="@13:")
 
-    depends_on("rocm-openmp-extras", when="+openmp %llvm-amdgpu", type="build")
+    depends_on("rocm-openmp-extras", when="+openmp %llvm-amdgpu@:7.2", type="build")
 
     depends_on("libiberty+pic")
 
