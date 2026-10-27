@@ -84,6 +84,7 @@ class Papi(AutotoolsPackage, ROCmPackage):
     depends_on("rocprofiler-dev", when="+rocm")
     depends_on("rocprofiler-sdk", when="+rocp_sdk")
     depends_on("llvm-amdgpu", when="+rocm")
+    # Only needed for llvm-amdgpu@:7.2; later versions build OpenMP.
     depends_on("rocm-openmp-extras", when="+rocm ^llvm-amdgpu@:7.2")
     depends_on("rocm-smi-lib", when="+rocm_smi")
 
